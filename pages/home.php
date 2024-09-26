@@ -21,6 +21,7 @@
     <?php
     include('../includes/footer.php');
     ?>
+    <h1> Tite </h1>
 
 
 </body>
