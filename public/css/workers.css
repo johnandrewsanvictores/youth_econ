@@ -1,0 +1,47 @@
+button {
+  background: transparent;
+  border: none;
+}
+
+.main_container {
+  padding-top: 80px;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6em;
+  gap: 1em;
+}
+
+h2 {
+  color: var(--primary);
+}
+
+#p_title {
+  max-width: 64ch;
+  width: 100%;
+  text-align: center;
+}
+
+.function {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#searchbar {
+  padding: 0.5em;
+  border-radius: 25px;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 4em;
+}
+
+.workerCard {
+  background-color: var(--bg-grey);
+}
