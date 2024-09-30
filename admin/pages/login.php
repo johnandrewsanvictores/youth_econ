@@ -19,7 +19,7 @@
                     <h1>Admin Login</h1>
                     <input type="text" name="username" id="username">
                     <input type="password" name="password" id="password">
-                    <button type="submit"></button>
+                    <button type="submit">Login</button>
                 </form>
             </div>
         </div>
