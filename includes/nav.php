@@ -9,7 +9,6 @@
     <li><a href="about.php">About</a></li>
     <li><a href="workers.php">Worker</a></li>
     <li><a href="business.php">Business</a></li>
-    <li><a href="gallery.php">Gallery</a></li>
   </ul>
 </nav>
 
