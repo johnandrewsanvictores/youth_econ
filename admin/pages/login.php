@@ -58,11 +58,8 @@ if (isset($_POST['submit'])) {
             <img src="../images/logo.jpg" alt="Business logo" />
         </div>
 
-        <div>
-
-        </div>
         <div class="content-container">
-            <h1>Log In</h1>
+            <h2>Log In</h2>
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="post">
 
                 <label for="username">Username: <span class="red-color">*</span></label>
