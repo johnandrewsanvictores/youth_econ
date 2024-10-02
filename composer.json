@@ -1,0 +1,17 @@
+{
+    "name": "dreww/youth_econ",
+    "autoload": {
+        "psr-4": {
+            "Dreww\\YouthEcon\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "johnandrewsanvictores",
+            "email": "sanvictoresjohnandrewe@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}

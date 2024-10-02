@@ -17,6 +17,7 @@
         --blue-color: #4070f4;
         --grey-color: #707070;
         --grey-color-light: #aaa;
+        --red: #c74c4c;
     }
 
     body {
@@ -28,6 +29,14 @@
         font-family: "Josefin Sans", sans-serif;
         color: var(--grey-color);
         padding: 1.5em;
+    }
+
+    .red-color {
+        color: var(--red);
+    }
+
+    .error-msg {
+        font-size: var(--small);
     }
 
     .main-container {
@@ -55,7 +64,7 @@
     form {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(5em 1fr));
-        row-gap: 1em;
+        row-gap: 0.2em;
         align-items: center;
     }
 
@@ -71,13 +80,7 @@
         border-radius: 5px;
     }
 
-    #username,
-    #password {
-        margin-top: -1em;
-    }
-
     #submit-btn {
-        margin-top: 1em;
         background-color: var(--primary-color);
         color: var(--white-color);
         border-radius: 5px;
@@ -90,12 +93,6 @@
     #submit-btn:hover {
         background: var(--light-pink)
     }
-
-    
-.error-msg {
-    color: rgb(253, 144, 144);
-    font-size: var(--small);
-}
 
     @media (max-width: 620px) {
 

@@ -14,7 +14,7 @@
     include('../includes/nav.php');
     ?>
 
-    <section style="height:100vh">
+    <section>
 
     </section>
 
