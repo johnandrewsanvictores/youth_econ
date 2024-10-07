@@ -31,11 +31,22 @@
     
     <div class="function">
 
-    <form action="">
+    <form id ="searchFilter" action="">
 
+    <div class="search-container">
     <input type="search" id="searchbar" placeholder="Search..">
     <button><i class="fas fa-search"></i></button>
-    <button>Filter</button>
+    </div>
+
+    <div class="filter">
+    <button id="filter-button">Filter</button>
+
+    <div class="filter-box">
+    
+    </div>
+
+
+    </div>
 
     </form>
 

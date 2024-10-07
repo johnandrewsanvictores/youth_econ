@@ -31,9 +31,51 @@ h2 {
   align-items: center;
 }
 
+#searchFilter {
+  display: flex;
+  gap: 1em;
+}
+
 #searchbar {
-  padding: 0.5em;
   border-radius: 25px;
+  width: 100%;
+  max-width: 50em;
+  background: transparent;
+  border: none;
+}
+
+#searchbar:focus {
+  outline: none;
+}
+
+.search-container {
+  padding-block: 0.5em;
+  padding-inline: 1em;
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-white);
+  border-radius: 25px;
+  width: 100%;
+  max-width: 30em;
+}
+
+.filter {
+  background-color: aqua;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+#filter-button {
+  font-size: var(--small);
+}
+
+.filter-box {
+  background-color: blueviolet;
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 15px;
 }
 
 .head {
