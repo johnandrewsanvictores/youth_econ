@@ -60,7 +60,7 @@ h2 {
 }
 
 .filter {
-  background-color: aqua;
+  background: transparent;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -71,11 +71,20 @@ h2 {
 }
 
 .filter-box {
-  background-color: blueviolet;
-  width: 100px;
-  height: 100px;
+  display: none;
+  background-color: var(--bg-grey);
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  width: 18em;
+  height: 24em;
+  padding: 1em;
   position: absolute;
   top: 15px;
+}
+
+.categories {
+  overflow: auto;
+  height: 80%;
 }
 
 .head {
@@ -86,4 +95,92 @@ h2 {
 
 .workerCard {
   background-color: var(--bg-grey);
+}
+
+/* cadkjccnacanc */
+
+.filter-form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+/* Headings for each section */
+.categories p {
+  font-weight: bold;
+  color: #e91e63;
+  margin-bottom: 1em;
+}
+
+.categories > div {
+  margin-bottom: 3em;
+}
+
+/* Styling for the main categories and details tag */
+details {
+  margin-bottom: 15px;
+}
+
+summary {
+  cursor: pointer;
+  color: #e91e63;
+  margin-bottom: 0.5em;
+}
+
+details[open] summary {
+  color: var(--primary);
+}
+
+/* Labels and radio buttons */
+label {
+  display: block;
+  margin-left: 20px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+input[type="radio"] {
+  margin-right: 10px;
+}
+
+/* Apply button styling */
+.apply-btn {
+  background-color: #e91e63;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  display: block;
+  margin-top: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.apply-btn:hover {
+  background-color: #d81b60;
+}
+
+/* nvadnskvnancdslckam  */
+
+/* Styling the dropdown arrow */
+details summary::marker {
+  display: none; /* Remove the default marker */
+}
+
+/* Custom dropdown icon */
+details summary::before {
+  content: "\25B6"; /* Unicode for a right-pointing triangle */
+  display: inline-block;
+  margin-right: 10px;
+  transition: transform 0.2s ease-in-out;
+  color: var(--primary); /* Use your primary color */
+}
+
+/* Rotate the arrow when details are open */
+details[open] summary::before {
+  transform: rotate(90deg); /* Rotate to make it point down */
 }
