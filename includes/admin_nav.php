@@ -22,7 +22,7 @@
             <li id="active-nav"><a href="#">Dashboard</a></li>
             <li><a href="#"><span class="mul-navlinks">Business &dtrif;</span></a>
                 <ul class="dropdown">
-                    <li><a href="#">List of Business</a></li>
+                    <li><a href="business.php">List of Business</a></li>
                     <li><a href="#">Product Gallery</a></li>
                 </ul>
             </li>
