@@ -64,7 +64,7 @@ select {
     display: none;
   }
   /* Custom Select wrapper */
-  .select {
+  .field-select {
     position: relative;
     display: flex;
     width: 15em;
@@ -73,7 +73,7 @@ select {
     overflow: hidden;
   }
   /* Arrow */
-  .select::after {
+  .field-select::after {
     content: '\25BC';
     position: absolute;
     top: 0;
@@ -85,7 +85,7 @@ select {
     color: var(--primary);
   }
   /* Transition */
-  .select:hover::after {
+  .field-select:hover::after {
     color: var(--tertiary);
   }
 

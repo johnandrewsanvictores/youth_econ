@@ -5,25 +5,6 @@ require '../../models/Business_model.php';
 $businessModel = new BusinessModel($connection);
 $businessFields = $businessModel->getBusinessFields();
 
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['add_field_btn'])) {
-
-        $title_field = $_POST['title_field'];
-        $selected_icon = $_POST['selected_icon'];
-        if (empty($title_field) || empty($selected_icon)) {
-            echo '<script>alert("Title and icon is required")</script>';
-        } else {
-            $response = $businessModel->addBusinessField($title_field, $selected_icon);
-            $businessFields = $businessModel->getBusinessFields();
-        }
-    }
-
-    if (isset($_POST['field-id'])) {
-        $businessModel->removeBusinessField($_POST['field-id']);
-    }
-}
-
 ?>
 
 
@@ -36,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.7/css/dataTables.dataTables.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="../../global.css">
     <link rel="stylesheet" href="../css/business.css">
     <title>Business</title>
@@ -82,11 +64,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <div class="custom-filter-control">
                         <label for="field">Field</label>
-                        <div class="select">
+                        <div class="field-select">
                             <select>
-                                <option value="1">Americano</option>
-                                <option value="2">Latte</option>
-                                <option value="3">Green Tea</option>
+                                <?php
+                                $businessModel = new BusinessModel($connection);
+                                $businessFields = $businessModel->getBusinessFields();
+
+                                if ($businessFields) {
+                                    foreach ($businessFields as $field) {
+                                        $id = htmlspecialchars($field['id']);
+                                        $title = htmlspecialchars($field['title']);
+
+                                        echo "<option value='$id'>$title</option>";
+                                    }
+                                }
+                                ?>
                             </select>
                         </div>
                     </div>
@@ -95,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             </div>
             <div class="table-div">
-                <table id="example" class="display stripe nowrap" style="width:100%">
+                <table id="example" class="display stripe" style="width:100%">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -184,13 +176,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <?php include('../../includes/modals/field_modal.php') ?>
+    <?php include('../../includes/modals/business_form_modal.php') ?>
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.1.7/js/dataTables.js"></script>
     <script>
-        new DataTable('#example', {
-            scrollX: true,
+        const table = new DataTable('#example', {
+            scrollX: true
         });
+
+        table.on('click', 'tbody tr', function(e) {
+            e.currentTarget.classList.toggle('selected');
+        });
+
+        // document.querySelector('#button').addEventListener('click', function() {
+        //     alert(table.rows('.selected').data().length + ' row(s) selected');
+        // });
+
+        var bus_new_btn = document.querySelector('#bus-new-btn');
+        bus_new_btn.addEventListener('click', showBSModal);
     </script>
 
     <script src="../js/business.js"></script>

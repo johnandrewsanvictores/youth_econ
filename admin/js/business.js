@@ -56,6 +56,7 @@ const Button_Functions = (function() {
 
 const DOM_Manipulate = (function() {
     var field_table_body = document.querySelector('#theme-table tbody');
+    var field_select = document.querySelector('.field-select select');
 
     function add_new_field_row(data) {
         field_table_body.innerHTML += `
@@ -70,8 +71,19 @@ const DOM_Manipulate = (function() {
                                     `;
     }
 
+    function add_new_option_select(data) {
+        field_select.innerHTML += `<option value='${data.id}'>${data.title}</option>`
+    }
+
+    function remove_option_select(id) {
+        const current_option = field_select.querySelector(`option[value="${id}"]`)
+        current_option.remove();
+    }
+
     return {
-        add_new_field_row
+        add_new_field_row,
+        add_new_option_select,
+        remove_option_select
     }
 })();
 
@@ -90,6 +102,7 @@ const Field_Request = (function() {
                     // Show response
                     Popup1.show_message("Removed successfully", 'success');
                     current_row_el.remove();
+                    DOM_Manipulate.remove_option_select(id);
                 }
             };
             
@@ -113,6 +126,7 @@ const Field_Request = (function() {
 
                         let data = response.last_added_data;
                         DOM_Manipulate.add_new_field_row(data);
+                        DOM_Manipulate.add_new_option_select(data);
 
                         Button_Functions.rmv_btn_add_event();
                                     
