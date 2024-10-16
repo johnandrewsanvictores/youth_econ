@@ -1,139 +1,70 @@
-document.addEventListener("DOMContentLoaded", function() {
-    var field_new_btn = document.getElementById('field-new-btn');
-    var field_form = document.querySelector('.field-modal-wrapper form');
+const select_field_node = document.querySelector('.field-select select')
 
-    field_new_btn.addEventListener('click', () => {
-        Button_Functions.new_btn_event();
-    });
-
-
-    field_form.addEventListener('submit', (e) => {
-        Field_Request.addEntry(e, field_form);
-    })
-
-    Button_Functions.rmv_btn_add_event();
+const table = new DataTable('#example', {
+    scrollX: true,
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url: "../../api/business_api.php",
+        type: "post",
+        data: {'action' : "datatableDisplay", "selected_field" : select_field_node.value},
+    },
+    // ajax: "../../api/business_datatable_api.php",
+    "columns": [
+        { "data": "id", visible: false },
+        { "data": "name" },
+        { "data": "field" },
+        { "data": "location" },
+        { "data": "contact_number" },
+    ]
 });
 
+table.on('click', 'tbody tr', function(e) {
+    e.currentTarget.classList.toggle('selected');
+});
 
-const Button_Functions = (function() {
-    const modal_wrapper = document.querySelector('.field-modal-wrapper');
-    const modal_container = document.querySelector('.field-modal-wrapper .modal-container');
-    var rmv_field_btns = null;
-
-    function new_btn_event() {
-        modal_container.style.opacity = '1';
-        modal_container.style.visibility = 'visible';
-        modal_container.style.transform = 'scale(1)';
-
-        modal_wrapper.style.opacity = '1';
-        modal_wrapper.style.visibility = 'visible';
-        modal_wrapper.style.transform = 'scale(1)';
-    }
-
-
-    function remove_btn_event(btn) {
-        let current_row_element = btn.parentElement.parentElement;
-        Popup1.show_confirm_dialog("Are you sure you want to remove it?", () => Field_Request.deleteEntry(btn.id, current_row_element));
-    }
-
-    function init_rmv_field_btns() {
-        return document.querySelectorAll('.remove-field-btn');
-    }
-
-    function rmv_btn_add_event() {
-        rmv_field_btns = init_rmv_field_btns();
-        rmv_field_btns.forEach(btn => {
-            btn.addEventListener('click', () => remove_btn_event(btn))
-        })
-    }
-
-    return {
-        new_btn_event,
-        rmv_btn_add_event
-    }
-})();
-
-
-const DOM_Manipulate = (function() {
-    var field_table_body = document.querySelector('#theme-table tbody');
-    var field_select = document.querySelector('.field-select select');
-
-    function add_new_field_row(data) {
-        field_table_body.innerHTML += `
-                                    <tr>
-                                    <td>
-                                        <img src='${data.icon}' alt='icon'>
-                                    </td>
-                                    <td>${data.title}</td>
-                                    <td><button class='remove-field-btn' id='${data.id}'>
-                                            <i class='fas fa-trash'></i>
-                                        </button></td></tr>
-                                    `;
-    }
-
-    function add_new_option_select(data) {
-        field_select.innerHTML += `<option value='${data.id}'>${data.title}</option>`
-    }
-
-    function remove_option_select(id) {
-        const current_option = field_select.querySelector(`option[value="${id}"]`)
-        current_option.remove();
-    }
-
-    return {
-        add_new_field_row,
-        add_new_option_select,
-        remove_option_select
-    }
-})();
+// document.querySelector('#button').addEventListener('click', function() {
+//     alert(table.rows('.selected').data().length + ' row(s) selected');
+// });
 
 
 
-const Field_Request = (function() {
+select_field_node.addEventListener('change', () => {
+    table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_field" : select_field_node.value}
+        // Update DataTable data
+        table.draw();
 
-    function deleteEntry(id, current_row_el) {
-            var xhr = new XMLHttpRequest();
-            
-            xhr.open("POST", "/youth_econ/api/business_api.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    // Show response
-                    Popup1.show_message("Removed successfully", 'success');
-                    current_row_el.remove();
-                    DOM_Manipulate.remove_option_select(id);
-                }
-            };
-            
-            // Send the request with the ID of the entry to delete
-            xhr.send("field-id=" + id); 
-    }
+    console.log(select_field_node.value);
+})
 
-    function addEntry(event, form) {
+var bus_new_btn = document.querySelector('#bus-new-btn');
+bus_new_btn.addEventListener('click', showBSModal);
+
+const business_form = document.getElementById('bs-form');
+console.log(business_form);
+business_form.addEventListener('submit', (e) => Request_Business.submitData(e))
+
+
+const Request_Business = (function() {
+    function submitData(event) {
         event.preventDefault();
-
-        const formData = new FormData(form);
+        const formData = new FormData(event.target);
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', "/youth_econ/api/business_api.php", true);
+        xhr.open('POST', '/youth_econ/api/business_api.php', true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
+                        table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_field" : select_field_node.value}
+                        table.draw();
                         Popup1.show_message(response.message, 'success');
-
-                        let data = response.last_added_data;
-                        DOM_Manipulate.add_new_field_row(data);
-                        DOM_Manipulate.add_new_option_select(data);
-
-                        Button_Functions.rmv_btn_add_event();
-                                    
-                        document.querySelector('#selected-icon').style.display = 'none';
-                        document.querySelector('#selected-icon-input').value = '';
-                        form.reset();
-
+                        event.target.reset();
+                        document.querySelector('.logo-container img').src = "../images/placeholder.svg";
+                        resetMap() //business_form_modal function
+                        // PopUp.closeModal();
+                        // Table.deselect_all_selected_row();
                     } else {
                         Popup1.show_message(response.message, 'error');
                     }
@@ -142,45 +73,10 @@ const Field_Request = (function() {
                 }
             }
         };
-
         xhr.send(formData);
     }
 
     return {
-        deleteEntry,
-        addEntry
-    }
-})();
-
-
-const Popup1 = (function() {
-    function show_message(msg, icon) {
-        Swal.fire({
-            position: "top right",
-            icon: icon,
-            title: msg,
-            showConfirmButton: false,
-            timer: 1500
-        });
-    }
-
-    function show_confirm_dialog(msg, callback) {
-        Swal.fire({
-            text: msg,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                callback();
-            }
-        });
-    }
-
-    return {
-        show_message,
-        show_confirm_dialog
+        submitData
     }
 })();

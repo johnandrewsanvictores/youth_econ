@@ -12,24 +12,25 @@
                 <div class="left-form">
                     <div class="logo-container">
                         <label>Logo <span class="red-text">*</span></label>
-                        <img src="../images/logo.jpg" alt="preview logo img">
+                        <img src="../images/placeholder.svg" alt="preview logo img">
                         <div class="input-file-div">
                             <label for="input-file-btn" class="custom-file-upload">
                                 Upload Logo
                             </label>
-                            <input type="file" name="logo-img" id="input-file-btn">
+                            <input type="file" name="logo-img" id="input-file-btn" value="" required>
                         </div>
                     </div>
 
                     <div>
+                        <input type="hidden" name="business_id" value="" />
                         <label>Name <span class="red-text">*</span></label>
-                        <input type="text" name="busienss_name">
+                        <input type="text" name="business_name" required>
                     </div>
 
                     <div>
                         <p>Field <span class="red-text">*</span></p>
-                        <div class="field-select">
-                            <select name="field">
+                        <div class="field-select field-select-form">
+                            <select name="field" required>
                                 <?php
                                 $businessModel = new BusinessModel($connection);
                                 $businessFields = $businessModel->getBusinessFields();
@@ -49,22 +50,22 @@
 
                     <div>
                         <label>Contact Number <span class="red-text">*</span></label>
-                        <input type="tel" name="busienss_name">
+                        <input type="tel" name="bus_contact_num" pattern="09\d{2} \d{3} \d{4}" placeholder="09XX XXX XXXX" maxlength="13" required>
                     </div>
 
                     <div class="social-links-container">
                         <label>Social Media Links</label>
                         <div>
                             <div><i class="fab fa-facebook-f"></i></div>
-                            <input type="text" name="facebook" id="" placeholder="Enter the facebook link">
+                            <input type="url" name="facebook" id="" placeholder="Enter the facebook link">
                         </div>
                         <div>
                             <div><i class="fab fa-instagram-square"></i></div>
-                            <input type="text" name="instagram" id="" placeholder="Enter the instagram link">
+                            <input type="url" name="instagram" id="" placeholder="Enter the instagram link">
                         </div>
                         <div>
                             <div><i class="fab fa-tiktok"></i></div>
-                            <input type="text" name="Tiktok" id="" placeholder="Enter the tiktok link">
+                            <input type="url" name="tiktok" id="" placeholder="Enter the tiktok link">
                         </div>
                     </div>
                 </div>
@@ -72,7 +73,7 @@
                 <div class="right-form">
                     <div class="desc-container">
                         <label>Description <span class="red-text">*</span></label>
-                        <textarea name="description" id=""></textarea>
+                        <textarea name="description" id="" required></textarea>
                     </div>
 
                     <div class="location-container">
@@ -205,6 +206,7 @@
 
     #bs-form .left-form input[type="text"],
     #bs-form .left-form input[type="tel"],
+    #bs-form .left-form input[type="url"],
     .location-output-container input {
         width: 100%;
         padding: 1em 1em;
@@ -385,7 +387,10 @@
     const bs_container = document.querySelector('.bs-form-main-container');
     const bs_close_btn = document.querySelector('#close-bs-form');
 
+    const logo_btn = document.querySelector('#input-file-btn');
+
     bs_close_btn.addEventListener('click', closeBSModal);
+    logo_btn.addEventListener('change', (event) => setLogo(event));
 
     function closeBSModal() {
         // fieldModalWrapper.querySelector('form').reset();
@@ -409,6 +414,19 @@
         bs_wrapper.style.opacity = '1';
         bs_wrapper.style.visibility = 'visible';
         bs_wrapper.style.transform = 'scale(1)';
+    }
+
+    function setLogo(e) {
+        const img_preview = document.querySelector('.logo-container img');
+        const file = e.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img_preview.src = e.target.result;
+            };
+            reader.readAsDataURL(file); // Convert file to base64 string
+        }
     }
 
 
@@ -482,6 +500,18 @@
             .openPopup();
     }
 
+    const defaultMapCenter = [13.96066770927695, 121.60971066368803]; // Center of Gulang-Gulang
+    const defaultMapZoom = 15;
+
+    // Function to reset the map
+    function resetMap() {
+        map.setView(defaultMapCenter, defaultMapZoom);
+        if (currentMarker) {
+            map.removeLayer(currentMarker); // Remove existing marker if any
+            currentMarker = null; // Reset currentMarker to null
+        }
+    }
+
     // Click event to get coordinates and add a single marker
     map.on('click', function(e) {
         var latLng = e.latlng;
@@ -491,5 +521,5 @@
     });
 
     // Initial fit to Gulang-Gulang
-    map.setView([13.96066770927695, 121.60971066368803], 15);
+    map.setView(defaultMapCenter, defaultMapZoom);
 </script>

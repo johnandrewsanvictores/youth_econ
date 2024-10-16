@@ -65,7 +65,8 @@ $businessFields = $businessModel->getBusinessFields();
                     <div class="custom-filter-control">
                         <label for="field">Field</label>
                         <div class="field-select">
-                            <select>
+                            <select name="field">
+                                <option value="all" selected>All</option>
                                 <?php
                                 $businessModel = new BusinessModel($connection);
                                 $businessFields = $businessModel->getBusinessFields();
@@ -90,38 +91,24 @@ $businessFields = $businessModel->getBusinessFields();
                 <table id="example" class="display stripe" style="width:100%">
                     <thead>
                         <tr>
+                            <th>Id</th>
                             <th>Name</th>
                             <th>Field</th>
                             <th>Location</th>
                             <th>Contact Number</th>
-                            <th>Social Media</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>fsfdsfd</td>
-                            <td>fsfdsfd</td>
-                            <td>fsfdsfd</td>
-                            <td>fsfdsfd</td>
-                            <td>fsfdsfd</td>
-                        </tr>
 
-                        <tr>
-                            <td>fsfdsfd</td>
-                            <td>fsfdsfd</td>
-                            <td>fsfdsfd</td>
-                            <td>fsfdsfd</td>
-                            <td>fsfdsfd</td>
-                        </tr>
 
                     </tbody>
                     <tfoot>
                         <tr>
+                            <th>Id</th>
                             <th>Name</th>
                             <th>Field</th>
                             <th>Location</th>
                             <th>Contact Number</th>
-                            <th>Social Media</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -180,23 +167,8 @@ $businessFields = $businessModel->getBusinessFields();
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.1.7/js/dataTables.js"></script>
-    <script>
-        const table = new DataTable('#example', {
-            scrollX: true
-        });
 
-        table.on('click', 'tbody tr', function(e) {
-            e.currentTarget.classList.toggle('selected');
-        });
-
-        // document.querySelector('#button').addEventListener('click', function() {
-        //     alert(table.rows('.selected').data().length + ' row(s) selected');
-        // });
-
-        var bus_new_btn = document.querySelector('#bus-new-btn');
-        bus_new_btn.addEventListener('click', showBSModal);
-    </script>
-
+    <script src="../js/business_field.js"></script>
     <script src="../js/business.js"></script>
 
     <?php include('../../includes/footer.php'); ?>
