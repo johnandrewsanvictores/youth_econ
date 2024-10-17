@@ -120,6 +120,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         return $response;
     }
 
+    //removing business/es
+    if (isset($_POST['action']) && $_POST['action'] === 'remove' && isset($_POST['ids'])) {
+        $response = $businessModel->removeBusinesData('ids');
+
+        echo $response;
+        return $response;
+    }
+
     //adding business
     if (isset($_POST['business_name']) || empty($_POST['business_id'])) {
         $uploadDir = '../uploads/logo/'; // Ensure this directory exists

@@ -74,14 +74,40 @@ const Table = (function() {
 const Controls = (function() {
     var bus_new_btn = document.querySelector('#bus-new-btn');
     var bus_edit_btn  = document.querySelector('#edit-btn');
+    var bus_rmv_btn  = document.querySelector('#remove-btn');
 
     function add_events() {
         bus_new_btn.addEventListener('click', Form.add_data_event);
         bus_edit_btn.addEventListener('click', Form.edit_data_event);
-        select_field_node.addEventListener('change', () => {
-            table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_field" : select_field_node.value}
-            table.draw();
-        });
+        bus_rmv_btn.addEventListener('click', remove_data_event);
+        select_field_node.addEventListener('change', select_field_change_event);
+    }
+
+    function get_selected_ids() {
+        var datas = Table.getSelectedRow(table);
+        var ids = [];
+        for(let i =0; i < datas.length; i++ ) {
+            ids.push(datas[i].id);
+        }
+
+        return ids;
+    }
+
+    function remove_data_event() {
+        const selected_rows = Table.getSelectedRow(table);
+
+        if(selected_rows.length < 1) {
+            Popup1.show_message('Please ensure at least one row is selected.', 'warning') ;
+            return;
+        }
+
+        const ids = get_selected_ids();
+        Popup1.show_confirm_dialog("Are you sure you want to delete it?", () => Request_Business.removeData(ids));
+    }
+
+    function select_field_change_event() {
+        table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_field" : select_field_node.value}
+        table.draw();
     }
 
     return {
@@ -252,6 +278,34 @@ const Request_Business = (function() {
         xhr.send(formData);
     }
 
+    function removeData(ids) {
+        const xhr = new XMLHttpRequest();
+
+        const requestBody = 'ids=' + JSON.stringify(ids) + `&action=remove`;
+        xhr.open('POST', '/youth_econ/api/business_api.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        Table.deselect_all_selected_row();
+                        table.row('.selected').remove().draw(false);
+                        
+                        Popup1.show_message(response.message, 'success');
+
+                    } else {
+                        Popup1.show_message(response.message, 'error');
+                    }
+                } else {
+                    PopUp.showMessage('Error occurred while processing your request.', 'error');
+                }
+            }
+        };
+        xhr.send(requestBody);
+    }
+
     function get_specific_business_data(id) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -282,6 +336,7 @@ const Request_Business = (function() {
 
     return {
         submitData,
+        removeData,
         get_specific_business_data
     }
 })();

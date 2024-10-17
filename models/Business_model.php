@@ -499,4 +499,81 @@ class BusinessModel
 
         return json_encode($this->response);
     }
+
+
+    function get_string_ids($data_name)
+    {
+        $idsArray = json_decode($_POST[$data_name], true);
+
+        // Prepare an array for placeholders
+        $placeholders = [];
+        foreach ($idsArray as $id) {
+            $placeholders[] = '?'; // Create a placeholder for each ID
+        }
+
+        // Convert the array of placeholders into a comma-separated string
+        $placeholdersString = implode(',', $placeholders);
+
+        // Prepare the SQL statement with the placeholders
+        $sql = "SELECT * FROM business WHERE id IN ($placeholdersString)";
+        $stmt = $this->pdo->prepare($sql);
+
+        // Execute the statement with the IDs
+        $stmt->execute($idsArray);
+
+        // Fetch results if needed
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $results;
+    }
+
+    function removeBusinesData($data_name)
+    {
+        // Get the results from get_string_ids
+        $results = $this->get_string_ids($data_name);
+
+        // Check if any results were returned
+        if (empty($results)) {
+            $this->response['success'] = false;
+            $this->response['message'] = "No IDs provided or found.";
+            return json_encode($this->response);
+        }
+
+        // Extract IDs into a separate array
+        $idsArray = array_column($results, 'id'); // Assuming 'id' is the column name
+        $placeholders = rtrim(str_repeat('?,', count($idsArray)), ','); // Create placeholders
+
+        try {
+            // Prepare the SQL statement to retrieve image paths
+            $sql = "SELECT logo FROM business WHERE id IN ($placeholders)";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($idsArray); // Execute with the IDs array
+
+            // Fetch and delete images
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                if (file_exists($row['logo'])) { // Check if file exists before unlinking
+                    unlink($row['logo']);
+                }
+            }
+
+            // Prepare the delete query
+            $deleteQuery = "DELETE FROM business WHERE id IN ($placeholders)";
+            $deleteStmt = $this->pdo->prepare($deleteQuery);
+            $deleteStmt->execute($idsArray); // Execute with the IDs array
+
+            // Check if the delete was successful
+            if ($deleteStmt->rowCount() > 0) {
+                $this->response['success'] = true;
+                $this->response['message'] = "Item/s removed successfully.";
+            } else {
+                $this->response['success'] = false;
+                $this->response['message'] = "No items were removed.";
+            }
+        } catch (PDOException $e) {
+            $this->response['success'] = false;
+            $this->response['message'] = "Error removing item: " . $e->getMessage();
+        }
+
+        return json_encode($this->response);
+    }
 }
