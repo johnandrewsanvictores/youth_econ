@@ -75,7 +75,6 @@ const DOM_Manipulate = (function() {
     function add_new_option_select(data) {
         field_select.innerHTML += `<option value='${data.id}'>${data.title}</option>`
         field_select_form.innerHTML += `<option value='${data.id}'>${data.title}</option>`
-        console.log(field_select_form);
     }
 
     function remove_option_select(id) {

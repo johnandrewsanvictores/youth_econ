@@ -218,7 +218,6 @@ const Request_Business = (function() {
 
     function addData() {
         const formData = new FormData(business_form);
-        console.log(formData);
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/youth_econ/api/business_api.php', true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -249,10 +248,6 @@ const Request_Business = (function() {
         formData.append('action', 'updateBusiness');
         formData.append('img_src', document.querySelector('.logo-container img').src);
         formData.append('old_img_src', old_img);
-
-        console.log(document.querySelector('.logo-container img').src);
-        console.log(old_img);
-
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/youth_econ/api/business_api.php', true);
