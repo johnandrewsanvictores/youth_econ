@@ -39,6 +39,7 @@
     </div>
 
     <div class="filter">
+
     <button id="filter-button">Filter</button>
 
     <div class="filter-box">

@@ -1,3 +1,14 @@
+.body {
+  background-color: aqua;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(30em, 1fr));
+  justify-content: center;
+  gap: 1em;
+  align-items: center;
+  place-items: center;
+  padding: 5em;
+}
+
 button {
   background: transparent;
   border: none;
@@ -63,6 +74,7 @@ h2 {
   background: transparent;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   position: relative;
 }
 
@@ -79,7 +91,7 @@ h2 {
   height: 24em;
   padding: 1em;
   position: absolute;
-  top: 15px;
+  top: 30px;
 }
 
 .categories {
@@ -93,11 +105,7 @@ h2 {
   gap: 4em;
 }
 
-.workerCard {
-  background-color: var(--bg-grey);
-}
-
-/* cadkjccnacanc */
+/* filter form */
 
 .filter-form {
   background-color: white;
@@ -164,7 +172,7 @@ input[type="radio"] {
   background-color: #d81b60;
 }
 
-/* nvadnskvnancdslckam  */
+/* filter form: drop down style  */
 
 /* Styling the dropdown arrow */
 details summary::marker {
@@ -184,3 +192,5 @@ details summary::before {
 details[open] summary::before {
   transform: rotate(90deg); /* Rotate to make it point down */
 }
+
+/* worker card */
