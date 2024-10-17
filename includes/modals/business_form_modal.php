@@ -329,7 +329,8 @@
 
 
 
-    #submit-bs-form {
+    #submit-bs-form,
+    #edit-bs-form-btn {
         padding: 0.5em 1em;
         border-radius: 5px;
         background-color: var(--primary);
@@ -402,6 +403,8 @@
         bs_wrapper.style.opacity = '0';
         bs_wrapper.style.visibility = 'hidden';
         bs_wrapper.style.transform = 'scale(0)';
+
+        reset_bs_form();
     }
 
     function showBSModal() {
@@ -427,6 +430,12 @@
             };
             reader.readAsDataURL(file); // Convert file to base64 string
         }
+    }
+
+    function reset_bs_form() {
+        document.querySelector('#bs-form').reset();
+        document.querySelector('.logo-container img').src = "../images/placeholder.svg";
+        resetMap() //business_form_modal function
     }
 
 

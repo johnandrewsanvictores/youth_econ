@@ -11,7 +11,7 @@ $businessFields = $businessModel->getBusinessFields();
 if (isset($_POST['action']) && $_POST['action'] == "datatableDisplay") {
     $search_v = $_POST['search']['value'];
     $selected_field = $_POST['selected_field'] == 'all' ? null : $_POST['selected_field'];
-    $output = $businessModel->getBusinesses($selected_field);
+    $output = $businessModel->getBusinessesDataTable($selected_field);
 
     echo $output;
     exit();
@@ -38,6 +38,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         echo $response;
         return $response;
+    }
+
+    //get specific business data
+    if (isset($_POST['action']) && $_POST['action'] == "get_specific_data") {
+        $id = $_POST['id'];
+
+        // Fetch business data
+        $response = $businessModel->getBusinesses(['id' => $id]);
+
+        // Decode the JSON response from getBusinesses()
+        $responseArray = json_decode($response, true);
+
+        // Check if the business data was retrieved successfully
+        if ($responseArray['success']) {
+            // Fetch social media data
+            $socialMedia = $businessModel->getSocialMedia($id);
+
+            // Decode the JSON response from getSocialMedia()
+            $socialMediaArray = $socialMedia;
+
+            // Merge social media data into the business data
+            if ($socialMediaArray['success']) {
+                $responseArray['data']['social_media'] = $socialMediaArray['data'];
+            } else {
+                // If no social media links are found, you can add an empty array or leave it as is
+                $responseArray['data']['social_media'] = [];
+            }
+
+            // Update the message to indicate that both business and social media data were retrieved
+            $responseArray['message'] = "Business and social media data retrieved";
+        }
+
+        // Encode the merged response back to JSON
+        $mergedResponse = json_encode($responseArray);
+
+        // Output the final response
+        echo $mergedResponse;
+        return $mergedResponse;
+    }
+
+    //updating business
+    if (isset($_POST['action']) && $_POST['action'] == "updateBusiness") {
     }
 
     //adding business

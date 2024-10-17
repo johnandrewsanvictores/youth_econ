@@ -155,79 +155,124 @@ class BusinessModel
         }
     }
 
+    public function getSocialMedia($id)
+    {
+        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // public function getBusinesses($filters = [], $orderBy = 'id', $orderDir = 'ASC', $limit = 10, $offset = 0)
-    // {
-    //     try {
-    //         // Set the PDO error mode to exception
-    //         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        try {
+            // Prepare the statement to fetch data by business ID
+            $stmt = $this->pdo->prepare("SELECT * FROM social_media_links WHERE business_id = :id");
 
-    //         // Base SQL query
-    //         $sql = "SELECT 
-    //                     business.name,
-    //                     business_field.title,
-    //                     business.contact_number,
-    //                     business.location
+            // Execute the statement with the bound parameter
+            $stmt->execute([':id' => $id]);
 
-    //                 FROM 
-    //                     business
-    //                 INNER JOIN 
-    //                     business_field ON business_field.id = business.field_id
+            // Fetch the result as associative array
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);  // Use fetchAll to get all social media links
 
-    //         ";
+            if ($rows) {
+                return [
+                    'success' => true,
+                    'message' => "Social media links retrieved",
+                    'data' => $rows
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => "No social media links found",
+                    'data' => []
+                ];
+            }
+        } catch (PDOException $e) {
+            return [
+                'success' => false,
+                'message' => "Error: " . $e->getMessage(),
+                'data' => []
+            ];
+        }
+    }
 
-    //         $stmt = $this->pdo->prepare($sql);
 
-    //         // Initialize an array to hold the WHERE clause and parameters
-    //         $whereClauses = [];
-    //         $params = [];
 
-    //         // Add filtering based on passed filters (dynamic WHERE clause)
-    //         foreach ($filters as $column => $value) {
-    //             $whereClauses[] = "$column = :$column";
-    //             $params[":$column"] = $value;
-    //         }
 
-    //         // Add WHERE clause if there are any filters
-    //         if (!empty($whereClauses)) {
-    //             $sql .= " WHERE " . implode(" AND ", $whereClauses);
-    //         }
 
-    //         // Add ORDER BY clause
-    //         $sql .= " ORDER BY $orderBy $orderDir";
+    public function getBusinesses($filters = [], $orderBy = 'id', $orderDir = 'ASC', $limit = 10, $offset = 0)
+    {
+        try {
+            // Set the PDO error mode to exception
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    //         // Add LIMIT and OFFSET for pagination
-    //         $sql .= " LIMIT :limit OFFSET :offset";
+            // Base SQL query
+            $sql = "SELECT 
+                        business.id,
+                        business.logo,
+                        business.name,
+                        business.field_id,
+                        business.contact_number,
+                        business.location,
+                        business.description
 
-    //         // Prepare the SQL statement
-    //         $stmt = $this->pdo->prepare($sql);
+                    FROM 
+                        business
 
-    //         // Bind parameters for filters
-    //         foreach ($params as $param => $value) {
-    //             $stmt->bindValue($param, $value);
-    //         }
+            ";
 
-    //         // Bind the limit and offset for pagination
-    //         $stmt->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
-    //         $stmt->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
+            $stmt = $this->pdo->prepare($sql);
 
-    //         // Execute the statement
-    //         $stmt->execute();
+            // Initialize an array to hold the WHERE clause and parameters
+            $whereClauses = [];
+            $params = [];
 
-    //         // Fetch all the results
-    //         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // Add filtering based on passed filters (dynamic WHERE clause)
+            foreach ($filters as $column => $value) {
+                $whereClauses[] = "$column = :$column";
+                $params[":$column"] = $value;
+            }
 
-    //         // Return the result set
-    //         return $results;
-    //     } catch (PDOException $e) {
-    //         // Handle any errors
-    //         $this->response['success'] = false;
-    //         $this->response['message'] = "Error retrieving businesses: " . $e->getMessage();
-    //         return json_encode($this->response);
-    //     }
-    // }
+            // Add WHERE clause if there are any filters
+            if (!empty($whereClauses)) {
+                $sql .= " WHERE " . implode(" AND ", $whereClauses);
+            }
 
-    public function getBusinesses($selected_field)
+            // Add ORDER BY clause
+            $sql .= " ORDER BY $orderBy $orderDir";
+
+            // Add LIMIT and OFFSET for pagination
+            $sql .= " LIMIT :limit OFFSET :offset";
+
+            // Prepare the SQL statement
+            $stmt = $this->pdo->prepare($sql);
+
+            // Bind parameters for filters
+            foreach ($params as $param => $value) {
+                $stmt->bindValue($param, $value);
+            }
+
+            // Bind the limit and offset for pagination
+            $stmt->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
+
+            // Execute the statement
+            $stmt->execute();
+
+            // Fetch all the results
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Return the result set
+
+            $this->response['success'] = true;
+            $this->response['message'] = "Retrieved";
+            $this->response['data'] = $results;
+
+            return json_encode($this->response);
+        } catch (PDOException $e) {
+            // Handle any errors
+            $this->response['success'] = false;
+            $this->response['message'] = "Error retrieving businesses: " . $e->getMessage();
+            return json_encode($this->response);
+        }
+    }
+
+    public function getBusinessesDataTable($selected_field)
     {
         try {
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -327,16 +372,6 @@ class BusinessModel
     public function addBusinessData($logo, $name, $field_id, $contact_number, $description, $location)
     {
         try {
-
-            // check if the name of business already exists
-            // $existingBusiness = $this->getBusinesses(['name' => $name]);
-            // if (!empty($existingBusiness)) {
-            //     $this->response['success'] = false;
-            //     $this->response['message'] = "The business already exists!";
-            //     return json_encode($this->response);
-            //     exit();
-            // }
-
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             // Check if the name already exists in the business table
@@ -378,6 +413,41 @@ class BusinessModel
         } catch (PDOException $e) {
             $this->response['success'] = false;
             $this->response['message'] = "Error adding Time: " . $e->getMessage();
+        }
+
+        return json_encode($this->response);
+    }
+
+    public function updateBusinessData($id, $logo, $name, $field_id, $contact_number, $description, $location, $facebook, $instagram, $tiktok)
+    {
+        try {
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Prepare an SQL statement for execution
+            $stmt = $this->pdo->prepare("UPDATE business SET logo = :logo, name = :name, field_id = :field_id, 
+                                      contact_number = :contact_number, description = :description, 
+                                      location = :location WHERE id = :id");
+
+            // Bind parameters to the prepared statement
+            $stmt->bindParam(':logo', $logo);
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':field_id', $field_id);
+            $stmt->bindParam(':contact_number', $contact_number);
+            $stmt->bindParam(':description', $description);
+            $stmt->bindParam(':location', $location);
+            $stmt->bindParam(':id', $id);
+
+            // Execute the prepared statement
+            $stmt->execute();
+
+            // Update social media data if needed
+            // $this->updateSocialMedia($id, $facebook, $instagram, $tiktok);
+
+            $this->response['success'] = true;
+            $this->response['message'] = "Business data updated successfully.";
+        } catch (PDOException $e) {
+            $this->response['success'] = false;
+            $this->response['message'] = "Error updating data: " . $e->getMessage();
         }
 
         return json_encode($this->response);
