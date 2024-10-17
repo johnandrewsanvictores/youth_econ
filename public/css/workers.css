@@ -1,5 +1,4 @@
 .body {
-  background-color: aqua;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(30em, 1fr));
   justify-content: center;

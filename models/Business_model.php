@@ -191,6 +191,54 @@ class BusinessModel
         }
     }
 
+    public function updateSocialMedia($bus_id, $fb, $ig, $tt)
+    {
+        try {
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Define the social media IDs and corresponding links
+            $socialMedias = [
+                1 => $fb,   // Facebook
+                2 => $ig,   // Instagram
+                3 => $tt    // TikTok
+            ];
+
+            foreach ($socialMedias as $soc_id => $link) {
+                if (isset($link)) {
+                    // Check if the record exists
+                    $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM social_media_links WHERE business_id = :business_id AND social_media_id = :soc_id");
+                    $stmt->bindParam(':business_id', $bus_id);
+                    $stmt->bindParam(':soc_id', $soc_id);
+
+                    $stmt->execute();
+                    $exists = $stmt->fetchColumn() > 0;
+
+                    if ($exists) {
+                        // Record exists, perform the update
+                        $stmt = $this->pdo->prepare("UPDATE social_media_links SET link = :link WHERE business_id = :business_id AND social_media_id = :soc_id");
+                        $stmt->bindParam(':business_id', $bus_id);
+                        $stmt->bindParam(':soc_id', $soc_id);
+                        $stmt->bindParam(':link', $link);
+                        $stmt->execute();
+                    } else {
+                        // Record does not exist, perform the insert
+                        $stmt = $this->pdo->prepare("INSERT INTO social_media_links (business_id, social_media_id, link) VALUES (:business_id, :soc_id, :link)");
+                        $stmt->bindParam(':business_id', $bus_id);
+                        $stmt->bindParam(':soc_id', $soc_id);
+                        $stmt->bindParam(':link', $link);
+                        $stmt->execute();
+                    }
+                }
+            }
+        } catch (PDOException $e) {
+            $this->response['success'] = false;
+            $this->response['message'] = "Error updating or inserting data: " . $e->getMessage();
+        }
+    }
+
+
+
+
 
 
 
@@ -271,6 +319,7 @@ class BusinessModel
             return json_encode($this->response);
         }
     }
+
 
     public function getBusinessesDataTable($selected_field)
     {
@@ -366,9 +415,6 @@ class BusinessModel
     }
 
 
-
-
-
     public function addBusinessData($logo, $name, $field_id, $contact_number, $description, $location)
     {
         try {
@@ -418,6 +464,7 @@ class BusinessModel
         return json_encode($this->response);
     }
 
+
     public function updateBusinessData($id, $logo, $name, $field_id, $contact_number, $description, $location, $facebook, $instagram, $tiktok)
     {
         try {
@@ -441,7 +488,7 @@ class BusinessModel
             $stmt->execute();
 
             // Update social media data if needed
-            // $this->updateSocialMedia($id, $facebook, $instagram, $tiktok);
+            $this->updateSocialMedia($id, $facebook, $instagram, $tiktok);
 
             $this->response['success'] = true;
             $this->response['message'] = "Business data updated successfully.";

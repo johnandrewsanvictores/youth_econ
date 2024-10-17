@@ -1,4 +1,17 @@
-const select_field_node = document.querySelector('.field-select select')
+const select_field_node = document.querySelector('.field-select select');
+const business_form = document.getElementById('bs-form');
+const form_title = document.querySelector('.bs-form-header h5');
+var table = null;
+
+var old_img = null; //this is the src of the old img if override in edit.
+
+document.addEventListener("DOMContentLoaded", function() {
+    table = Table.initDataTable();
+    Table.addSelectEvent(table);
+
+    Controls.add_events();
+    Form.add_events();
+});
 
 
 const Table = (function() {
@@ -58,97 +71,58 @@ const Table = (function() {
 })();
 
 
+const Controls = (function() {
+    var bus_new_btn = document.querySelector('#bus-new-btn');
+    var bus_edit_btn  = document.querySelector('#edit-btn');
 
-
-
-
-
-
-
-
-
-// const table = new DataTable('#example', {
-//     scrollX: true,
-//     processing: true,
-//     serverSide: true,
-//     ajax: {
-//         url: "../../api/business_api.php",
-//         type: "post",
-//         data: {'action' : "datatableDisplay", "selected_field" : select_field_node.value},
-//     },
-//     // ajax: "../../api/business_datatable_api.php",
-//     "columns": [
-//         { "data": "id", visible: false },
-//         { "data": "name" },
-//         { "data": "field" },
-//         { "data": "location" },
-//         { "data": "contact_number" },
-//     ]
-// });
-
-const table = Table.initDataTable();
-
-table.on('click', 'tbody tr', function(e) {
-    e.currentTarget.classList.toggle('selected');
-});
-
-// document.querySelector('#button').addEventListener('click', function() {
-//     alert(table.rows('.selected').data().length + ' row(s) selected');
-// });
-
-
-
-select_field_node.addEventListener('change', () => {
-    table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_field" : select_field_node.value}
-        // Update DataTable data
-        table.draw();
-
-    console.log(select_field_node.value);
-})
-
-var bus_new_btn = document.querySelector('#bus-new-btn');
-var bus_edit_btn  = document.querySelector('#edit-btn');
-
-var submit_form_btn = document.querySelector('#submit-bs-form');
-const form_title = document.querySelector('.bs-form-header h5');
-
-bus_new_btn.addEventListener('click', add_event);
-bus_edit_btn.addEventListener('click', edit_event);
-
-const business_form = document.getElementById('bs-form');
-console.log(business_form);
-
-business_form.addEventListener('submit', (e) => Request_Business.submitData(e))
-
-
-function add_event() {
-    form_title.textContent = "Add Business";
-    showBSModal();
-}
-
-async function edit_event(e) {
-    const selected_rows = Table.getSelectedRow(table);
-    const img_input = document.getElementById('input-file-btn');
-
-    img_input.required = false;
-    
-
-    form_title.textContent = "Update Business";
-      
-    if(selected_rows.length != 1) {
-        Popup1.show_message('Please ensure only one row is selected.', 'warning') ;
-        Table.deselect_all_selected_row();
-        return;
+    function add_events() {
+        bus_new_btn.addEventListener('click', Form.add_data_event);
+        bus_edit_btn.addEventListener('click', Form.edit_data_event);
+        select_field_node.addEventListener('change', () => {
+            table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_field" : select_field_node.value}
+            table.draw();
+        });
     }
 
-    console.log(selected_rows[0].id)
-    const data = await Request_Business.get_specific_business_data(selected_rows[0].id);
-    Form.fill_info(data);
-    showBSModal();
-}
+    return {
+        add_events
+    }
+
+})();
 
 
 const Form = (function() {
+
+    function add_events() {
+        business_form.addEventListener('submit', (e) => Request_Business.submitData(e));
+    }
+
+    function add_data_event() {
+        form_title.textContent = "Add Business";
+        showBSModal();
+    }
+
+    async function edit_data_event(e) {
+        const selected_rows = Table.getSelectedRow(table);
+        const img_input = document.getElementById('input-file-btn');
+    
+        img_input.required = false;
+        
+    
+        form_title.textContent = "Update Business";
+          
+        if(selected_rows.length != 1) {
+            Popup1.show_message('Please ensure only one row is selected.', 'warning') ;
+            Table.deselect_all_selected_row();
+            return;
+        }
+    
+        const data = await Request_Business.get_specific_business_data(selected_rows[0].id);
+        Form.fill_info(data);
+
+        showBSModal();
+    }
+
     function fill_info(response) {
         
         var data = response[0];
@@ -166,7 +140,7 @@ const Form = (function() {
 
         const id_input = document.querySelector('input[name="business_id"]');
 
-
+        old_img = data.logo;
         img_preview.src = "../" + data.logo;
         name.value = data.name;
         select_field.value = data.field_id;
@@ -197,7 +171,10 @@ const Form = (function() {
     }
 
     return {
-        fill_info
+        fill_info,
+        add_events,
+        add_data_event,
+        edit_data_event
     }
 })();
 
@@ -229,7 +206,7 @@ const Request_Business = (function() {
                         Popup1.show_message(response.message, 'success');
                         reset_bs_form();
                         // PopUp.closeModal();
-                        // Table.deselect_all_selected_row();
+                        Table.deselect_all_selected_row();
                     } else {
                         Popup1.show_message(response.message, 'error');
                     }
@@ -244,6 +221,12 @@ const Request_Business = (function() {
     function updateData() {
         const formData = new FormData(business_form);
         formData.append('action', 'updateBusiness');
+        formData.append('img_src', document.querySelector('.logo-container img').src);
+        formData.append('old_img_src', old_img);
+
+        console.log(document.querySelector('.logo-container img').src);
+        console.log(old_img);
+
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/youth_econ/api/business_api.php', true);
@@ -257,6 +240,7 @@ const Request_Business = (function() {
                         table.draw();
                         Popup1.show_message(response.message, 'success');
                         reset_bs_form();
+                        closeBSModal();
                     } else {
                         Popup1.show_message(response.message, 'error');
                     }

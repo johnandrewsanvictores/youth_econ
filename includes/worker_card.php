@@ -44,65 +44,62 @@
 </div>
 
 <style>
+    .workerCard {
+        background-color: var(--bg-grey);
+        display: flex;
+        width: 100%;
+        max-width: 30em;
+        border-radius: 1em;
+        padding-left: 1em;
+    }
 
-.workerCard {
-    background-color: var(--bg-grey);
-    display: flex;
-    width: 100%;
-    max-width: 30em;
-    border-radius: 1em;
-    padding-left: 1em;
-}
+    .picture {
+        background-color: var(--primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 10em;
+        border-radius: 1em 0 0 1em;
+        padding: 1em;
 
-.picture {
-    background-color: var(--primary);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    max-width:  10em;
-    border-radius: 1em 0 0 1em;
-    padding: 1em;
+    }
 
-}
+    .picture img {
+        width: 100%;
+        max-width: 169px;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+    }
 
-.picture img {
-    width: 100%;
-    max-width: 169px;
-    aspect-ratio: 1/1;
-    border-radius: 50%;
-}
+    .worker_profile {
+        display: flex;
+        flex-direction: column;
+        gap: 2em;
+        padding: 1em;
+        width: 100%;
 
-.worker_profile {
-    display: flex;
-    flex-direction: column;
-    gap: 2em;
-    padding:  1em;
-    width: 100%;
+    }
 
-}
-
-.name_title {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-    color: var(--primary)
-}
-
-
-.contact_info {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    color:  var(--font-dark);
-
-}
-
-.contact_info div {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-}
+    .name_title {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em;
+        color: var(--primary)
+    }
 
 
+    .contact_info {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+        color: var(--font-dark);
+
+    }
+
+    .contact_info div {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
 </style>
