@@ -1,3 +1,14 @@
+.body {
+  background-color: aqua;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(30em, 1fr));
+  justify-content: center;
+  gap: 1em;
+  align-items: center;
+  place-items: center;
+  padding: 5em;
+}
+
 button {
   background: transparent;
   border: none;
@@ -31,9 +42,61 @@ h2 {
   align-items: center;
 }
 
+#searchFilter {
+  display: flex;
+  gap: 1em;
+}
+
 #searchbar {
-  padding: 0.5em;
   border-radius: 25px;
+  width: 100%;
+  max-width: 50em;
+  background: transparent;
+  border: none;
+}
+
+#searchbar:focus {
+  outline: none;
+}
+
+.search-container {
+  padding-block: 0.5em;
+  padding-inline: 1em;
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-white);
+  border-radius: 25px;
+  width: 100%;
+  max-width: 30em;
+}
+
+.filter {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+#filter-button {
+  font-size: var(--small);
+}
+
+.filter-box {
+  display: none;
+  background-color: var(--bg-grey);
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  width: 18em;
+  height: 24em;
+  padding: 1em;
+  position: absolute;
+  top: 30px;
+}
+
+.categories {
+  overflow: auto;
+  height: 80%;
 }
 
 .head {
@@ -42,6 +105,92 @@ h2 {
   gap: 4em;
 }
 
-.workerCard {
-  background-color: var(--bg-grey);
+/* filter form */
+
+.filter-form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
 }
+
+/* Headings for each section */
+.categories p {
+  font-weight: bold;
+  color: #e91e63;
+  margin-bottom: 1em;
+}
+
+.categories > div {
+  margin-bottom: 3em;
+}
+
+/* Styling for the main categories and details tag */
+details {
+  margin-bottom: 15px;
+}
+
+summary {
+  cursor: pointer;
+  color: #e91e63;
+  margin-bottom: 0.5em;
+}
+
+details[open] summary {
+  color: var(--primary);
+}
+
+/* Labels and radio buttons */
+label {
+  display: block;
+  margin-left: 20px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+input[type="radio"] {
+  margin-right: 10px;
+}
+
+/* Apply button styling */
+.apply-btn {
+  background-color: #e91e63;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  display: block;
+  margin-top: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.apply-btn:hover {
+  background-color: #d81b60;
+}
+
+/* filter form: drop down style  */
+
+/* Styling the dropdown arrow */
+details summary::marker {
+  display: none; /* Remove the default marker */
+}
+
+/* Custom dropdown icon */
+details summary::before {
+  content: "\25B6"; /* Unicode for a right-pointing triangle */
+  display: inline-block;
+  margin-right: 10px;
+  transition: transform 0.2s ease-in-out;
+  color: var(--primary); /* Use your primary color */
+}
+
+/* Rotate the arrow when details are open */
+details[open] summary::before {
+  transform: rotate(90deg); /* Rotate to make it point down */
+}
+
+/* worker card */

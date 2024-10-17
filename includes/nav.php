@@ -33,6 +33,7 @@
     display: flex;
     justify-content: center;
     position: fixed;
+    z-index: 999;
   }
 
   #logo {
