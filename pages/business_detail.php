@@ -17,32 +17,38 @@
     ?>
 
     <section class="main-container">
-        <div class="business_Info">
+
+        <div class="business">
+            
             <img src="../public/images/businesslogokape.png" alt="kape" id="businesslogo">
-            <h2 id="businessname">businessname "kape"</h2>
-            <p id="business_name_info">Lorem, ipsum dolor sit amet consectetur adipisicing dicta impedit voluptates laboriosam.</p>
+           
+
+            <div class="business_info">
+                <h2 id="businessname">businessname "kape"</h2>
+                <p id="business_name_info">Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis excepturi consectetur eos! Iusto mollitia consectetur consequuntur, sunt maxime tenetur rerum voluptatum vel, error ullam, ad vitae laboriosam quas rem sit?Sint, quos, reiciendis consectetur eos molestiae assumenda illo, quisquam reprehenderit ea nihit, excepturi molestiae facere ea dolor quod?Voluptate, aut molestiae est nesciunt fugit magni cupiditate sunt consequatur asperiores atque aliquid maxime officia ut commodi id ipsa nemo explicabo reprehenderit eius dolores? Ab fugiat illum beatae nemo ipsa.</p>
+            </div>
         </div>
 
         <div class="Map">
-            <div class="map-contact-info">
-                    <div class="information">
+                <div class="information">
                         <div class="iconinfo">
-                            <i class="fas fa-map-marker-alt">   </i>
-                            <p> Brgy.Gulang Gulang Lucena, City </p>
+                            <i class="fas fa-map-marker-alt"  >   </i>
+                            <p id= "brgy"> Brgy.Gulang Gulang Lucena, City </p>
                         </div>
                         <div class="iconinfo">
                             <i class="fas fa-phone-alt"></i>
-                            <p> Brgy.Gulang Gulang Lucena, City </p>
+                            <p> (+63)123 456 890 </p>
                         </div><div class="iconinfo">
                             <i class="fab fa-facebook"></i>
-                            <p> Brgy.Gulang Gulang Lucena, City </p>
+                            <p> Sk Gulang Gulang Page </p>
                         </div>
-                    </div>
-                    <div class="map-section">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1936.197877911124!2d121.6159095227267!3d13.93502563844402!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd4b5a375ef9cd%3A0x48ff73822d713712!2sJoyCity%20General%20Merchandise!5e0!3m2!1sen!2sph!4v1727366933112!5m2!1sen!2sph" width="1000" height="500" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
-            </div>
+                </div>  
+
+                <div class="map-section">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1936.197877911124!2d121.6159095227267!3d13.93502563844402!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd4b5a375ef9cd%3A0x48ff73822d713712!2sJoyCity%20General%20Merchandise!5e0!3m2!1sen!2sph!4v1727366933112!5m2!1sen!2sph" width="1000" height="500" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
         </div>
+        
         <div class="gallery-section">
             <div class="img1">
                 <img src="../public/images/businesslogokape.png" alt="kape">
