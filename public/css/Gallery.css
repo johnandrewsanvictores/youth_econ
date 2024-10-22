@@ -93,3 +93,106 @@
   object-fit: cover;
 }
 
+
+body {
+  padding: 40px;
+  background-image: linear-gradient(#e8f0ff 0%, white 52.08%);
+  color: #0e3481;
+  min-height: 100vh;
+}
+
+.header .lead {
+  max-width: 620px;
+}
+
+/** Below CSS is completely optional **/
+
+.gallery-item {
+  width: 200px;
+  padding: 5px;
+}
+
+/* Container for the header */
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Styling for the header title */
+.header h1 {
+  font-size: 1.75rem;
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+/* Styling for the paragraph below the header title */
+.header p {
+  font-size: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Styling for the button */
+.header a {
+  display: inline-block;
+  margin-bottom: 3rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid #007bff;
+  color: #007bff;
+  text-decoration: none;
+  border-radius: 0.25rem;
+}
+
+/* Hover effect for the button */
+.header a:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Container for the gallery */
+.container-sm {
+  max-width: 576px;
+  margin: 0 auto;
+}
+
+/* Centering the gallery row */
+.row {
+  display: flex;
+  justify-content: center;
+}
+
+/* Styling for the gallery column */
+.col {
+  flex: 1;
+  max-width: 100%;
+}
+
+/* Styling for the images in the gallery */
+.gallery-container .gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+
+
+
+body {
+  padding: 40px;
+  background-image: linear-gradient(#e8f0ff 0%, white 52.08%);
+  color: #0e3481;
+  min-height: 100vh;
+}
+
+.header .lead {
+  max-width: 620px;
+}
+
+/** Below CSS is completely optional **/
+
+.gallery-item {
+  width: 200px;
+  padding: 5px;
+}
+
