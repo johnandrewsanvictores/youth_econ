@@ -1,0 +1,127 @@
+/* Global Styles */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #ff4278;
+  --secondary: #ff94b4;
+  --tertiary: #fff517;
+  --dark-primary: #81243e;
+  --bg-grey: #efefef;
+  --bg-white: #ffeef3;
+  --font-dark: #303030;
+  --font-white: #ffe7f6;
+  --font-light-grey: #7b7b7b;
+  --heading-font: "Courier New", Courier, monospace;
+  --body-font: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  --h1-desktop: 3.815rem;
+  --h2-desktop: 3.052rem;
+  --h3-desktop: 2.441rem;
+  --h4-desktop: 1.953rem;
+  --h5-desktop: 1.563rem;
+  --h6-desktop: 1.25rem;
+  --body: 1rem;
+  --small: 0.8rem;
+}
+
+body {
+  font-size: var(--body);
+  font-family: var(--body-font);
+  background-color: var(--bg-white);
+  color: var(--font-dark);
+  padding: 20px;
+}
+
+h2 {
+  color: var(--primary);
+}
+
+.main-container {
+  padding-top: 80px;
+}
+
+.business_Info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 40px;
+}
+
+#businesslogo {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+
+#businessname {
+  font-size: var(--h2-desktop);
+}
+
+#business_name_info {
+  color: var(--font-dark);
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* Map Section */
+
+.Map {
+  border-style: solid;
+  border: #303030;
+  background-origin: padding-box;
+}
+
+.map-contact-info {
+  display: flex;
+  flex-direction: row;
+}
+
+.map-section {
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.map-section iframe {
+  width: 50%;
+  height: 500px;
+  border: none;
+}
+
+/* Gallery Section */
+.gallery-section {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.gallery-section div {
+  flex: 1 1 calc(33.33% - 20px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.gallery-section img {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .gallery-section div {
+    flex: 1 1 calc(50% - 10px);
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-section div {
+    flex: 1 1 100%;
+  }
+}
