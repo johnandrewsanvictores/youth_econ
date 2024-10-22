@@ -1,0 +1,95 @@
+  .big_container {
+      padding-top: 80px;  
+      padding-bottom: 80px;
+  }
+
+  h2 {
+      text-align: center;
+      padding-top: 80px;
+      color: var(--primary);
+  }
+
+  .logo-button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--secondary);
+      color: white;
+        border: none;
+        border-radius: 5px;
+      cursor: pointer;  
+      font-size: 16px;
+      margin: 10px; 
+      padding: 20px;
+    }
+
+    .logo-button img {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
+
+    .logo-button:hover {
+      background-color: var(--primary);
+    }   
+
+    .flex_container {
+      display: flex;
+    background-color: var(--bg-white);  
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+        
+    } 
+
+    .next-button {
+      background-color: var(--secondary);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+  
+  .next-button:hover {  
+      background-color: var(--primary);
+  }
+
+  *{
+    padding: 0%;
+    margin: 0%;
+  }
+
+  .container {
+    max-width: 1224px;
+    width: 98%;
+    margin: auto;
+    padding: 40px 0;
+  
+  }
+
+  .photo-gallery {
+    display: flex;
+    gap: 20px;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+  }
+
+.photo img{
+  width: 100%;
+  height: 100%;
+  border-radius: 2%;
+  object-fit: cover;
+}
+
