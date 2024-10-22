@@ -1,0 +1,257 @@
+
+.main {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+}
+
+.main-content {
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+#example {
+    width: 100%;
+    color:var(--font-dark);
+    font-size: 0.9rem;
+}
+
+#example .dt-column-title {
+    color: var(--primary);
+}
+
+.custom-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.custom-filter-control {
+    display: flex;
+    align-items: center;
+    color: var(--font-dark);
+    gap: 1em;
+    align-self: flex-end;
+}
+
+.custom-filter-control label {
+    font-size: var(--h6-desktop);
+}
+
+.custom-filter-control select {
+    outline: var(--primary);
+    padding: 1em 2em;
+}
+
+select {
+    /* Reset Select */
+    appearance: none;
+    outline: 10px red;
+    border: 0;
+    box-shadow: none;
+    /* Personalize */
+    flex: 1;
+    padding: 0 1em;
+    color: #fff;
+    background-color: var(--primary);
+    background-image: none;
+    cursor: pointer;
+  }
+  /* Remove IE arrow */
+  select::-ms-expand {
+    display: none;
+  }
+  /* Custom Select wrapper */
+  .job-select {
+    position: relative;
+    display: flex;
+    width: 15em;
+    height: 3em;
+    border-radius: .25em;
+    overflow: hidden;
+  }
+  /* Arrow */
+  .job-select::after {
+    content: '\25BC';
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1em;
+    background-color: var(--dark-primary);
+    transition: .25s all ease;
+    pointer-events: none;
+    color: var(--primary);
+  }
+  /* Transition */
+  .job-select:hover::after {
+    color: var(--tertiary);
+  }
+
+  option:hover {
+    background-color: var(--primary);
+  }
+
+.action-btn button, #job-new-btn {
+    margin-bottom: 1em;
+    padding: 0.5em 1em;
+    color: var(--font-white);
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.action-btn button span {
+    font-size: var(--small);
+}
+
+.selection-control button {
+    font-size: var(--small);
+    padding: 0.5em 1em;
+    background-color: var(--dark-bg);
+    color: var(--font-white);
+    cursor: pointer;
+    outline: none;
+    border-radius: 5px;
+    margin-bottom: 1em;
+}
+
+#bus-new-btn, #job-new-btn {
+    background-color: var(--primary);
+}
+
+#edit-btn {
+    background-color: var(--green);
+}
+
+#remove-btn {
+    background-color: var(--red);
+}
+
+#view-btn {
+    background-color: var(--blue);
+}
+
+#selectAll-btn {
+    background-color: var(--bg-light-grey);
+}
+
+#deselect-btn {
+    background-color: var(--bg-light-grey);
+}
+
+
+@media (max-width: 940px) {
+    .custom-control {
+        flex-direction: column;
+    }
+
+    .custom-control:first-child {
+        display: flex;
+        justify-content: space-between;
+        gap: 1em;
+    }
+
+    .main-content {
+        padding: 1em;
+    }
+
+    .custom-filter-control {
+        align-self: center;
+    }
+}
+
+
+
+/* job section */
+.job-section {
+    padding: 2em;
+    position: sticky;
+    height: calc(100vh - 1em);
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    background-color: #f0f0f0;
+
+}
+
+.job-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.job-body {
+    overflow-y: auto;
+    height: calc(100vh - 1em);
+
+}
+.table-wrapper {
+    width: 100%;
+    max-width: 40em;
+    min-width: 10em;
+    overflow-x: scroll;
+}
+
+#theme-table {
+    border-collapse: collapse;
+    width: 100%;
+
+}
+
+#theme-table thead tr {
+    color: var(--font-dark);
+    font-size: var(--body);
+    font-weight: 700;
+    text-align: left;
+}
+
+#theme-table th,
+#theme-table td {
+    padding: 0.75em 1.5em;
+}
+
+#theme-table thead th {
+    color: var(--priamry);
+}
+
+#theme-table tr {
+    border-bottom: 2px solid #dddddd;
+    text-wrap: wrap;
+}
+
+#theme-table tbody tr:nth-of-type(odd) {
+    background-color: #e0e0e0;
+}
+
+#theme-table td button {
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 0.5em 1em;
+    background-color: var(--red);
+    color: var(--font-white);
+}
+
+#theme-table td img {
+    width: 3em;
+    height: 3em;
+}
+
+@media (max-width: 420px) {
+
+    #theme-table tbody td {
+        padding: 1em;
+    }
+}
+
+@media (max-width: 1058px) {
+    .main {
+        grid-template-columns: 1fr;
+    }
+
+    .job-section {
+        width: 100vw;
+    }
+}

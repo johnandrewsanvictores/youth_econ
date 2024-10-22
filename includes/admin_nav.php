@@ -26,7 +26,7 @@
                     <li><a href="#">Product Gallery</a></li>
                 </ul>
             </li>
-            <li><a href="#">Worker</a></li>
+            <li><a href="worker.php">Worker</a></li>
             <li><a href="#">Events</a></li>
         </ul>
     </nav>
