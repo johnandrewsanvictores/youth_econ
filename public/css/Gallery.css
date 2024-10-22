@@ -1,6 +1,7 @@
   .big_container {
       padding-top: 80px;  
       padding-bottom: 80px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
   }
 
   h2 {
@@ -15,7 +16,7 @@
       align-items: center;
       justify-content: center;
       background-color: var(--secondary);
-      color: white;
+      color: rgb(0, 0, 0);
         border: none;
         border-radius: 5px;
       cursor: pointer;  
@@ -25,8 +26,8 @@
     }
 
     .logo-button img {
-      width: 20px;
-      height: 20px;
+      width: 30px;
+      height: 30px;
       margin-right: 8px;
     }
 
@@ -35,17 +36,16 @@
     }   
 
     .flex_container {
-      display: flex;
+    display: flex;
     background-color: var(--bg-white);  
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
-        
+    flex-wrap: wrap;     
     } 
 
     .next-button {
       background-color: var(--secondary);
-      color: white;
+      color: rgb(0, 0, 0);
       border: none;
       border-radius: 5px;
       cursor: pointer;

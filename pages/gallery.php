@@ -20,36 +20,46 @@
         <h2>Product Gallery</h2> 
             <div class = "flex_container">
                 <button class="logo-button">
-                    <img src="../public/images/logo.jpg" alt="Logo"> Clothing
+                    <img src="https://cdn-icons-png.flaticon.com/128/2230/2230776.png" alt="Logo"> Clothing
                 </button>
 
                 <button class="logo-button">
-                    <img src="../public/images/logo.jpg" alt="Logo"> Arts & Crafts
+                    <img src="https://cdn-icons-png.flaticon.com/128/1756/1756784.png" alt="Logo"> Arts & Crafts
                 </button>
 
                 <button class="logo-button">
-                    <img src="../public/images/logo.jpg" alt="Logo"> Food
+                    <img src="https://cdn-icons-png.flaticon.com/128/562/562678.png" alt="Logo"> Food
                 </button>
 
                 <button class="logo-button">
-                    <img src="../public/images/logo.jpg" alt="Logo"> Digital
+                    <img src="https://cdn-icons-png.flaticon.com/128/4207/4207273.png" alt="Logo"> Digital
                 </button>
 
                 <button class="logo-button">
-                    <img src="../public/images/logo.jpg" alt="Logo"> AAAA
+                    <img src="https://cdn-icons-png.flaticon.com/128/4682/4682208.png" alt="Logo"> Beverages
                 </button>
 
                 <button class="logo-button">
-                    <img src="../public/images/logo.jpg" alt="Logo"> BBBB
+                    <img src="https://cdn-icons-png.flaticon.com/128/165/165674.png" alt="Logo"> Furniture
                 </button>
 
                 <button class="logo-button">
-                    <img src="../public/images/logo.jpg" alt="Logo"> CCCC
+                    <img src="https://cdn-icons-png.flaticon.com/128/3081/3081993.png" alt="Logo"> Toys
                 </button>
 
                 <button class="logo-button">
-                    <img src="../public/images/logo.jpg" alt="Logo"> DDDD
+                    <img src="https://cdn-icons-png.flaticon.com/128/2960/2960218.png" alt="Logo"> Pet Care
                 </button>
+
+                <button class="logo-button">
+                    <img src="https://cdn-icons-png.flaticon.com/128/5532/5532356.png" alt="Logo"> Health & Beauty
+                </button>
+
+                <button class="logo-button">
+                    <img src="https://cdn-icons-png.flaticon.com/128/4305/4305522.png" alt="Logo"> Watches
+                </button>
+
+                
 
                 <button class="next-button">Next</button>
             </div>
@@ -63,7 +73,7 @@
                         </div>
 
                         <div class="photo">
-                            <img src="https://smmarkets.ph/media/catalog/product/2/0/20436418_jack_jill-piattos_sprsized_chseprty-170g_copy_.png" alt="">
+                            <img src="https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcRyWB99hW_nP8kF-KoWU8vtZ9r9H2kBtu4rqrLu4lZ57bPdGrHaRnEr7rnwkezNXshiyMJe5FsnhxqkR8aQNkV9xjUykoR_uaR7cNbyEexDMvsNo1znGWlZZ5sSlg&usqp=CAc" alt="">
                         </div>
 
                         <div class="photo">
