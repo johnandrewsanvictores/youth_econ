@@ -1,6 +1,10 @@
 <?php
 require '../../includes/config.php';
 require '../../models/Business_model.php';
+require '../../models/Worker_model.php';
+
+$workerModel = new WorkerModel($connection);
+$jobs = $workerModel->getJob();
 
 $businessModel = new BusinessModel($connection);
 $businessFields = $businessModel->getBusinessFields();
@@ -129,32 +133,30 @@ $businessFields = $businessModel->getBusinessFields();
                 <table id="theme-table">
                     <thead>
                         <tr>
-                            <th>Icon</th>
                             <th>Name</th>
+                            <th>Field</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
 
                         <?php
-                        if ($businessFields) {
-                            foreach ($businessFields as $field) {
-                                $id = htmlspecialchars($field['id']);
-                                $icon = htmlspecialchars($field['icon']);
-                                $title = htmlspecialchars($field['title']);
+                        if ($jobs) {
+                            foreach ($jobs as $job) {
+                                $id = htmlspecialchars($job['id']);
+                                $title = htmlspecialchars($job['job_title']);
+                                $bs_field = htmlspecialchars($job['field_title']);
                                 echo "
                                     <tr>
-                                    <td>
-                                        <img src='$icon' alt='icon'>
-                                    </td>
                                     <td>$title</td>
+                                    <td>$bs_field</td>
                                     <td><button class='remove-job-btn' id='$id'>
                                             <i class='fas fa-trash'></i>
                                         </button></td></tr>
                                     ";
                             }
                         } else {
-                            echo '<tr><td colspan="3">No business jobs found.</td></tr>';
+                            echo '<tr><td colspan="3">No jobs found.</td></tr>';
                         }
                         ?>
 

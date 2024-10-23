@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     job_form.addEventListener('submit', (e) => {
-        Field_Request.addEntry(e, job_form);
+        Job_Request.addEntry(e, job_form);
     })
 
     Button_Function.rmv_btn_add_event();
@@ -33,7 +33,7 @@ const Button_Function = (function() {
 
     function remove_btn_event(btn) {
         let current_row_element = btn.parentElement.parentElement;
-        Popup1.show_confirm_dialog("Are you sure you want to remove it?", () => Field_Request.deleteEntry(btn.id, current_row_element));
+        Popup1.show_confirm_dialog("Are you sure you want to remove it?", () => Job_Request.deleteEntry(btn.id, current_row_element));
     }
 
     function init_rmv_job_btns() {
@@ -57,48 +57,46 @@ const Button_Function = (function() {
 const DOM_Manipulate = (function() {
     var job_table_body = document.querySelector('#theme-table tbody');
     var job_select = document.querySelector('.job-select select');
-    var job_select_form = document.querySelector('.job-select-form select');
+    // var job_select_form = document.querySelector('.job-select-form select');
     
     function add_new_job_row(data) {
         job_table_body.innerHTML += `
                                     <tr>
-                                    <td>
-                                        <img src='${data.icon}' alt='icon'>
-                                    </td>
-                                    <td>${data.title}</td>
+                                    <td>${data.job_title}</td>
+                                    <td>${data.field_title}</td>
                                     <td><button class='remove-job-btn' id='${data.id}'>
                                             <i class='fas fa-trash'></i>
                                         </button></td></tr>
                                     `;
     }
 
-    function add_new_option_select(data) {
-        job_select.innerHTML += `<option value='${data.id}'>${data.title}</option>`
-        job_select_form.innerHTML += `<option value='${data.id}'>${data.title}</option>`
-    }
+    // function add_new_option_select(data) {
+    //     job_select.innerHTML += `<option value='${data.id}'>${data.title}</option>`
+    //     job_select_form.innerHTML += `<option value='${data.id}'>${data.title}</option>`
+    // }
 
-    function remove_option_select(id) {
-        const current_option = job_select.querySelector(`option[value="${id}"]`)
-        const form_current_option = job_select_form.querySelector(`option[value="${id}"]`)
-        current_option.remove();
-        form_current_option.remove();
-    }
+    // function remove_option_select(id) {
+    //     const current_option = job_select.querySelector(`option[value="${id}"]`)
+    //     const form_current_option = job_select_form.querySelector(`option[value="${id}"]`)
+    //     current_option.remove();
+    //     form_current_option.remove();
+    // }
 
     return {
         add_new_job_row,
-        add_new_option_select,
-        remove_option_select
+        // add_new_option_select,
+        // remove_option_select
     }
 })();
 
 
 
-const Field_Request = (function() {
+const Job_Request = (function() {
 
     function deleteEntry(id, current_row_el) {
             var xhr = new XMLHttpRequest();
             
-            xhr.open("POST", "/youth_econ/api/business_api.php", true);
+            xhr.open("POST", "/youth_econ/api/worker_api.php", true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             
             xhr.onreadystatechange = function() {
@@ -108,7 +106,7 @@ const Field_Request = (function() {
                     if (response.success) {
                         Popup1.show_message(response.message, 'success');
                         current_row_el.remove();
-                        DOM_Manipulate.remove_option_select(id);
+                        // DOM_Manipulate.remove_option_select(id);
                     }else {
                         Popup1.show_message(response.message, 'error');
                     }
@@ -116,15 +114,17 @@ const Field_Request = (function() {
             };
             
             // Send the request with the ID of the entry to delete
-            xhr.send("field-id=" + id); 
+            xhr.send("job-id=" + id); 
     }
 
     function addEntry(event, form) {
         event.preventDefault();
 
         const formData = new FormData(form);
+        formData.append("action", "addJob");
+
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', "/youth_econ/api/business_api.php", true);
+        xhr.open('POST', "/youth_econ/api/worker_api.php", true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -135,12 +135,9 @@ const Field_Request = (function() {
 
                         let data = response.last_added_data;
                         DOM_Manipulate.add_new_job_row(data);
-                        DOM_Manipulate.add_new_option_select(data);
+                        // DOM_Manipulate.add_new_option_select(data);
 
                         Button_Function.rmv_btn_add_event();
-                                    
-                        document.querySelector('#selected-icon').style.display = 'none';
-                        document.querySelector('#selected-icon-input').value = '';
                         form.reset();
 
                     } else {

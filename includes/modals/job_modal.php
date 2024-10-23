@@ -1,18 +1,98 @@
 <div class="job-modal-wrapper">
     <div class="modal-container">
-        <button id="job-modal-close-btn"><i class="fas fa-times-circle"></i></button>
-        <h5>Add Job</h5>
+        <div>
+            <button id="job-modal-close-btn"><i class="fas fa-times"></i></button>
+            <h5>Add Job</h5>
+        </div>
         <form action="" method="POST">
             <div>
                 <label for="title_job">Title: <span class="red-text">*</span></label>
                 <input type="text" name="title_job" id="title-job" required>
             </div>
+
+            <div>
+                <p>Business Field <span class="red-text">*</span></p>
+                <div class="field-select">
+                    <select name="field" required>
+                        <?php
+                        $businessModel = new BusinessModel($connection);
+                        $businessFields = $businessModel->getBusinessFields();
+
+                        if ($businessFields) {
+                            foreach ($businessFields as $field) {
+                                $id = htmlspecialchars($field['id']);
+                                $title = htmlspecialchars($field['title']);
+
+                                echo "<option value='$id'>$title</option>";
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+
             <button type="submit" name="add_job_btn">Add</button>
         </form>
     </div>
 </div>
 
 <style>
+    select {
+        /* Reset Select */
+        appearance: none;
+        outline: 10px red;
+        border: 0;
+        box-shadow: none;
+        /* Personalize */
+        flex: 1;
+        padding: 0 1em;
+        color: #fff;
+        background-color: var(--primary);
+        background-image: none;
+        cursor: pointer;
+    }
+
+    /* Remove IE arrow */
+    select::-ms-expand {
+        display: none;
+    }
+
+    /* Custom Select wrapper */
+    .field-select {
+        position: relative;
+        display: flex;
+        width: 15em;
+        height: 3em;
+        border-radius: .25em;
+        overflow: hidden;
+    }
+
+    /* Arrow */
+    .field-select::after {
+        content: '\25BC';
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 1em;
+        background-color: var(--dark-primary);
+        transition: .25s all ease;
+        pointer-events: none;
+        color: var(--primary);
+    }
+
+    /* Transition */
+    .field-select:hover::after {
+        color: var(--tertiary);
+    }
+
+    option:hover {
+        background-color: var(--primary);
+    }
+
+
+
+
+
     .red-text {
         color: var(--red);
     }
@@ -35,13 +115,10 @@
     .job-modal-wrapper .modal-container {
         width: 100%;
         max-width: 30em;
-        height: 36em;
         background-color: var(--bg-white);
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 2em;
-        padding: 2em;
         position: relative;
         transform: scale(0);
         opacity: 0;
@@ -49,23 +126,41 @@
         transition: 0.3s all ease-out;
     }
 
+    .job-modal-wrapper .modal-container>div {
+        background-color: var(--primary);
+        width: 100%;
+        padding: 1em;
+        color: var(--font-white);
+        position: relative;
+    }
+
+    .job-modal-wrapper .modal-container>div h5 {
+        color: var(--font-white);
+        text-align: center;
+    }
+
     #job-modal-close-btn {
         position: absolute;
-        top: -20px;
-        right: -30px;
-        width: 3em;
-        height: 3em;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 2em;
+        height: 2em;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 20px;
+        border-radius: 50%;
         outline: none;
         border: none;
         cursor: pointer;
+        background-color: var(--bg-white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     #job-modal-close-btn i {
-        color: var(--font-white);
+        color: var(--primary);
         font-size: 1.4rem;
     }
 
@@ -78,14 +173,20 @@
     form {
         display: flex;
         flex-direction: column;
-        gap: 0.5em;
+        gap: 1em;
         width: 100%;
+        padding: 2em;
+        justify-content: center;
+
+    }
+
+    form>div {
+        display: flex;
+        flex-direction: column;
     }
 
     #title-job {
         width: 100%;
-        max-width: 20em;
-        margin-left: 1em;
     }
 
     .selection-icons-container {
@@ -148,8 +249,6 @@
             }
 
             function closeModal() {
-                selectedIcon.style.display = 'none';
-                selectedIconInput.value = '';
                 jobModalWrapper.querySelector('form').reset();
 
                 modal_container.style.opacity = '0';
