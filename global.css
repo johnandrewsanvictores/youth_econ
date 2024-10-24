@@ -103,3 +103,12 @@ a {
 li {
   list-style-type: none;
 }
+
+
+.red-text {
+  color: var(--red);
+}
+
+.white-text{
+  color: var(--font-white);
+}

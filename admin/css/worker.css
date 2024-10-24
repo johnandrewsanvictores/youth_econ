@@ -118,7 +118,7 @@ select {
     margin-bottom: 1em;
 }
 
-#bus-new-btn, #job-new-btn {
+#worker-new-btn, #job-new-btn {
     background-color: var(--primary);
 }
 

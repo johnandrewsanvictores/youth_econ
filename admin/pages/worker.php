@@ -37,7 +37,7 @@ $businessFields = $businessModel->getBusinessFields();
                 <div class="custom-control">
                     <div>
                         <div class="action-btn">
-                            <button id="bus-new-btn">
+                            <button id="worker-new-btn">
                                 <i class="fas fa-plus"></i>
                                 <span>New</span>
                             </button>
@@ -167,13 +167,13 @@ $businessFields = $businessModel->getBusinessFields();
     </div>
 
     <?php include('../../includes/modals/job_modal.php') ?>
-    <?php include('../../includes/modals/business_form_modal.php') ?>
+    <?php include('../../includes/modals/worker_form_modal.php') ?>
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.1.7/js/dataTables.js"></script>
 
     <script src="../js/job.js"></script>
-    <!-- <script src="../js/worker.js"></script> -->
+    <script src="../js/worker.js"></script>
 
     <?php include('../../includes/footer.php'); ?>
 </body>

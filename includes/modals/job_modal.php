@@ -89,14 +89,6 @@
         background-color: var(--primary);
     }
 
-
-
-
-
-    .red-text {
-        color: var(--red);
-    }
-
     .job-modal-wrapper {
         position: fixed;
         top: 0;
