@@ -131,4 +131,59 @@ class WorkerModel
 
         return json_encode($this->response);
     }
+
+
+
+
+    public function addWorkerData($profile_pic, $name, $age, $job_ids, $contact_number, $brief_intro, $education_level, $email, $fb)
+    {
+        try {
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Check if the name already exists in the worker table
+            $nameCheckSql = "SELECT COUNT(*) FROM worker WHERE name = :name";
+            $nameCheckStmt = $this->pdo->prepare($nameCheckSql);
+            $nameCheckStmt->bindValue(':name', $name);
+            $nameCheckStmt->execute();
+
+            // Get the count of matching names
+            $exists = $nameCheckStmt->fetchColumn();
+
+            if ($exists > 0) {
+                return json_encode(['success' => false, 'message' => "The worker already exists!"]);
+            }
+
+            // Begin a transaction
+            $this->pdo->beginTransaction();
+
+            // Prepare the SQL statement for execution
+            $stmt = $this->pdo->prepare("INSERT INTO worker (profile_pic, name, job_id, contact_number, brief_intro, education_level, email, fb_account, age) VALUES (:value1, :value2, :value3, :value4, :value5, :value6, :value7, :value8, :value9)");
+
+            // Bind parameters once outside the loop
+            $stmt->bindParam(':value1', $profile_pic);
+            $stmt->bindParam(':value2', $name);
+            $stmt->bindParam(':value4', $contact_number);
+            $stmt->bindParam(':value5', $brief_intro);
+            $stmt->bindParam(':value6', $education_level);
+            $stmt->bindParam(':value7', $email);
+            $stmt->bindParam(':value8', $fb);
+            $stmt->bindParam(':value9', $age);
+
+            foreach ($job_ids as $job_id) {
+                $stmt->bindParam(':value3', $job_id); // Bind job_id within the loop
+
+                // Execute the prepared statement
+                $stmt->execute();
+            }
+
+            // Commit the transaction
+            $this->pdo->commit();
+
+            return json_encode(['success' => true, 'message' => "Worker data added successfully."]);
+        } catch (PDOException $e) {
+            // Rollback the transaction if something went wrong
+            $this->pdo->rollBack();
+            return json_encode(['success' => false, 'message' => "Error adding worker: " . $e->getMessage()]);
+        }
+    }
 }

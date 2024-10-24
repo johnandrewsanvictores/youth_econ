@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Table.addSelectEvent(table);
 
     Controls.add_events();
-    // Form.add_events();
+    Form.add_events();
 });
 
 
@@ -102,7 +102,7 @@ const Controls = (function() {
         }
 
         const ids = get_selected_ids();
-        Popup1.show_confirm_dialog("Are you sure you want to delete it?", () => Request_Business.removeData(ids));
+        Popup1.show_confirm_dialog("Are you sure you want to delete it?", () => Request_Worker.removeData(ids));
     }
 
     function select_field_change_event() {
@@ -120,7 +120,7 @@ const Controls = (function() {
 const Form = (function() {
 
     function add_events() {
-        worker_form.addEventListener('submit', (e) => Request_Business.submitData(e));
+        worker_form.addEventListener('submit', (e) => Request_Worker.submitData(e));
     }
 
     function add_data_event() {
@@ -143,7 +143,7 @@ const Form = (function() {
             return;
         }
     
-        const data = await Request_Business.get_specific_business_data(selected_rows[0].id);
+        const data = await Request_Worker.get_specific_business_data(selected_rows[0].id);
         Form.fill_info(data);
 
         showBSModal();
@@ -205,11 +205,11 @@ const Form = (function() {
 })();
 
 
-const Request_Business = (function() {
+const Request_Worker = (function() {
     function submitData(event) {
         event.preventDefault();
         
-        if(form_title.textContent === "Add Business") {
+        if(form_title.textContent === "ADD WORKER INFORMATION") {
             addData();
         }else if(form_title.textContent === "Update Business") {
             updateData();
@@ -218,20 +218,21 @@ const Request_Business = (function() {
 
     function addData() {
         const formData = new FormData(worker_form);
+        formData.append("action", "addWorker");
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/youth_econ/api/business_api.php', true);
+        xhr.open('POST', '/youth_econ/api/worker_api.php', true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
-                        table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_field" : select_field_node.value}
-                        table.draw();
+                        // table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_field" : select_field_node.value}
+                        // table.draw();
                         Popup1.show_message(response.message, 'success');
                         reset_bs_form();
                         // PopUp.closeModal();
-                        Table.deselect_all_selected_row();
+                        // Table.deselect_all_selected_row();
                     } else {
                         Popup1.show_message(response.message, 'error');
                     }

@@ -12,7 +12,7 @@
 
                 echo "
                     <label for='$title-$id'>
-                        <input value='$id' id='$title-$id' type='checkbox' name='jobs'>
+                        <input value='$id' id='$title-$id' type='checkbox' name='jobs[]'>
                         $title
                     </label>
                 ";

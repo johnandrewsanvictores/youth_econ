@@ -19,7 +19,7 @@
                     </div>
 
                     <div>
-                        <input type="hidden" name="business_id" value="" />
+                        <input type="hidden" name="worker_id" value="" />
                         <label>Name <span class="red-text">*</span></label>
                         <input type="text" name="worker_name" required>
                     </div>
@@ -75,7 +75,7 @@
                         </div>
                         <div>
                             <div><i class="fas fa-envelope"></i></div>
-                            <input type="email" name="instagram" id="" placeholder="Enter worker email address">
+                            <input type="email" name="email" id="" placeholder="Enter worker email address">
                         </div>
                     </div>
 
