@@ -154,47 +154,48 @@ const Form = (function() {
     function fill_info(response) {
         
         var data = response[0];
-        var soc_meds = response.social_media;
-        const img_preview = document.querySelector('.logo-container img');
-        const name = document.querySelector('input[name="business_name"]');
-        const select_job = document.querySelector('.job-select-form select[name="job"]');
-        const contact_number = document.querySelector('input[name="bus_contact_num"');
-        const description = document.querySelector('.desc-container textarea');
-        const location = document.querySelector('.location-output-container input');
+        console.log(data);
+        // var soc_meds = response.social_media;
+        // const img_preview = document.querySelector('.logo-container img');
+        // const name = document.querySelector('input[name="business_name"]');
+        // const select_job = document.querySelector('.job-select-form select[name="job"]');
+        // const contact_number = document.querySelector('input[name="bus_contact_num"');
+        // const description = document.querySelector('.desc-container textarea');
+        // const location = document.querySelector('.location-output-container input');
 
-        const fb_input = document.querySelector('input[name="facebook"]');
-        const ig_input = document.querySelector('input[name="instagram"]');
-        const tt_input = document.querySelector('input[name="tiktok"]');
+        // const fb_input = document.querySelector('input[name="facebook"]');
+        // const ig_input = document.querySelector('input[name="instagram"]');
+        // const tt_input = document.querySelector('input[name="tiktok"]');
 
-        const id_input = document.querySelector('input[name="business_id"]');
+        // const id_input = document.querySelector('input[name="business_id"]');
 
-        old_img = data.logo;
-        img_preview.src = "../" + data.logo;
-        name.value = data.name;
-        select_job.value = data.job_id;
-        contact_number.value = data.contact_number;
-        description.value = data.description;
-        location.value = data.location;
+        // old_img = data.logo;
+        // img_preview.src = "../" + data.logo;
+        // name.value = data.name;
+        // select_job.value = data.job_id;
+        // contact_number.value = data.contact_number;
+        // description.value = data.description;
+        // location.value = data.location;
 
-        id_input.value = data.id;
+        // id_input.value = data.id;
 
-        var latlang= data.location.split(',');
+        // var latlang= data.location.split(',');
 
-        addMarker(latlang[0], latlang[1], "Coordinates: " + latlang[0] + ", " + latlang[1]);
+        // addMarker(latlang[0], latlang[1], "Coordinates: " + latlang[0] + ", " + latlang[1]);
 
-        soc_meds.forEach(soc_med => {
-            switch(soc_med.social_media_id) {
-                case '1':
-                    fb_input.value = soc_med.link;
-                    break;
-                case '2':
-                    ig_input.value = soc_med.link;
-                    break;
-                case '3':
-                    tt_input.value = soc_med.link;
-                    break;
-            }
-        });
+        // soc_meds.forEach(soc_med => {
+        //     switch(soc_med.social_media_id) {
+        //         case '1':
+        //             fb_input.value = soc_med.link;
+        //             break;
+        //         case '2':
+        //             ig_input.value = soc_med.link;
+        //             break;
+        //         case '3':
+        //             tt_input.value = soc_med.link;
+        //             break;
+        //     }
+        // });
 
     }
 
@@ -278,9 +279,11 @@ const Request_Worker = (function() {
 
     function removeData(ids) {
         const xhr = new XMLHttpRequest();
+        console.log(JSON.stringify(ids));
+
 
         const requestBody = 'ids=' + JSON.stringify(ids) + `&action=remove`;
-        xhr.open('POST', '/youth_econ/api/business_api.php', true);
+        xhr.open('POST', '/youth_econ/api/worker_api.php', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.onreadystatechange = function() {
@@ -309,7 +312,7 @@ const Request_Worker = (function() {
             const xhr = new XMLHttpRequest();
     
             const requestBody = 'id=' + id + '&action=get_specific_data'; // Serialize array to JSON string
-            xhr.open('POST', '/youth_econ/api/business_api.php', true);
+            xhr.open('POST', '/youth_econ/api/worker_api.php', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             xhr.onreadystatechange = function() {

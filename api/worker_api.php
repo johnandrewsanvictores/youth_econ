@@ -131,12 +131,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // }
 
     // //removing business/es
-    // if (isset($_POST['action']) && $_POST['action'] === 'remove' && isset($_POST['ids'])) {
-    //     $response = $businessModel->removeBusinesData('ids');
+    if (isset($_POST['action']) && $_POST['action'] === 'remove' && isset($_POST['ids'])) {
+        $response = $workerModel->removeWorkerData($_POST['ids']);
 
-    //     echo $response;
-    //     return $response;
-    // }
+        echo $response;
+        return $response;
+    }
 
     //adding worker
     if (isset($_POST['action']) && $_POST['action'] == "addWorker") {

@@ -315,4 +315,68 @@ class WorkerModel
             return json_encode($this->response);
         }
     }
+
+
+    public function removeWorkerData($ids)
+    {
+        // Check if any IDs were provided
+
+        $ids = json_decode($ids);
+        if (empty($ids)) {
+            $this->response['success'] = false;
+            $this->response['message'] = "No IDs provided.";
+            return json_encode($this->response);
+        }
+
+        // Prepare array and placeholders for query
+        $placeholders = rtrim(str_repeat('?,', count($ids)), ','); // Create placeholders
+
+        try {
+            // Begin transaction for safety in case of failure
+            $this->pdo->beginTransaction();
+
+            // Step 1: Select profile pictures to remove
+            $selectProfilePicsSql = "SELECT profile_pic FROM worker WHERE id IN ($placeholders)";
+            $selectStmt = $this->pdo->prepare($selectProfilePicsSql);
+            $selectStmt->execute($ids); // Execute with the IDs array
+
+            // Fetch and delete profile pictures
+            while ($row = $selectStmt->fetch(PDO::FETCH_ASSOC)) {
+                if (!empty($row['profile_pic']) && file_exists($row['profile_pic'])) {
+                    unlink($row['profile_pic']); // Delete profile picture file if exists
+                }
+            }
+
+            // Step 2: Remove entries from worker_job table (to maintain referential integrity)
+            $deleteWorkerJobsSql = "DELETE FROM worker_job WHERE worker_id IN ($placeholders)";
+            $deleteWorkerJobsStmt = $this->pdo->prepare($deleteWorkerJobsSql);
+            $deleteWorkerJobsStmt->execute($ids); // Execute with the IDs array
+
+            // Step 3: Remove workers from the worker table
+            $deleteWorkersSql = "DELETE FROM worker WHERE id IN ($placeholders)";
+            $deleteWorkersStmt = $this->pdo->prepare($deleteWorkersSql);
+            $deleteWorkersStmt->execute($ids); // Execute with the IDs array
+
+            // Step 4: Check if the workers were successfully removed
+            if ($deleteWorkersStmt->rowCount() > 0) {
+                // Commit transaction since all deletions succeeded
+                $this->pdo->commit();
+
+                $this->response['success'] = true;
+                $this->response['message'] = "Worker(s) removed successfully.";
+            } else {
+                // Rollback transaction if no rows were deleted
+                $this->pdo->rollBack();
+                $this->response['success'] = false;
+                $this->response['message'] = "No workers were removed.";
+            }
+        } catch (PDOException $e) {
+            // Rollback transaction in case of any error
+            $this->pdo->rollBack();
+            $this->response['success'] = false;
+            $this->response['message'] = "Error removing worker: " . $e->getMessage();
+        }
+
+        return json_encode($this->response);
+    }
 }
