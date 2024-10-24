@@ -109,42 +109,86 @@
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const buttons = document.querySelectorAll('.job-select-wrap button');
-        const checkboxes = document.querySelectorAll('.job-select-wrap input[type="checkbox"]');
+    const buttons = document.querySelectorAll('.job-select-wrap button');
+    const checkboxes = document.querySelectorAll('.job-select-wrap input[type="checkbox"]');
 
-        buttons.forEach(function(button) {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                const selectDiv = this.nextElementSibling;
+    buttons.forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const selectDiv = this.nextElementSibling;
 
-                if (selectDiv && selectDiv.classList.contains('select')) {
-                    selectDiv.style.display = (selectDiv.style.display === 'block') ? 'none' : 'block';
-                }
-
-                this.classList.toggle('active'); // Toggle the arrow by toggling 'active' class
-            });
-        });
-
-        // Update button text based on selected checkboxes
-        checkboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateButtonText(this.closest('.job-select-wrap'));
-            });
-        });
-
-        function updateButtonText(wrapper) {
-            const button = wrapper.querySelector('button');
-            const selectedCheckboxes = wrapper.querySelectorAll('input[type="checkbox"]:checked');
-            const selectedTitles = Array.from(selectedCheckboxes).map(cb => cb.parentElement.textContent.trim());
-
-            if (selectedTitles.length === 0) {
-                button.textContent = 'Select'; // Default text
-            } else if (selectedTitles.length >= 3) {
-                button.textContent = `${selectedTitles.length} jobs selected`; // If 3 or more selected
-            } else {
-                button.textContent = selectedTitles.join(', '); // Join selected titles with comma
+            if (selectDiv && selectDiv.classList.contains('select')) {
+                selectDiv.style.display = (selectDiv.style.display === 'block') ? 'none' : 'block';
             }
-        }
+
+            this.classList.toggle('active'); // Toggle the arrow by toggling 'active' class
+        });
     });
+
+    // Update button text based on selected checkboxes
+    checkboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            updateButtonText(this.closest('.job-select-wrap'));
+        });
+    });
+
+    function updateButtonText(wrapper) {
+        const button = wrapper.querySelector('button');
+        const selectedCheckboxes = wrapper.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedTitles = Array.from(selectedCheckboxes).map(cb => cb.parentElement.textContent.trim());
+
+        if (selectedTitles.length === 0) {
+            button.textContent = 'Select'; // Default text
+        } else if (selectedTitles.length >= 3) {
+            button.textContent = `${selectedTitles.length} jobs selected`; // If 3 or more selected
+        } else {
+            button.textContent = selectedTitles.join(', '); // Join selected titles with comma
+        }
+    }
+
+
+    function update_select_job() {
+        const select = document.querySelector('.job-select-wrap .select');
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("POST", "/youth_econ/api/worker_api.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+
+                // Show response
+                const response = JSON.parse(xhr.responseText)[0];
+                if (response.success) {
+                    let data = response.data;
+
+                    select.innerHTML = '';
+
+                    data.forEach(job => {
+                        select.innerHTML += `
+                            <label for='${job.job_title}-${job.id}'>
+                                <input value='${job.id}' id='${job.job_title}-${job.id}' type='checkbox' name='jobs[]'>
+                                ${job.job_title}
+                            </label>
+                    `
+                    });
+
+
+                    const checkboxes = document.querySelectorAll('.job-select-wrap input[type="checkbox"]');
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.addEventListener('change', function() {
+                            updateButtonText(this.closest('.job-select-wrap'));
+                        });
+                    });
+
+                } else {
+                    Popup1.show_message("ERROR RETRIEVING JOBS!!");
+                }
+            }
+        };
+
+        // Send the request with the ID of the entry to delete
+        xhr.send("action=getJobs");
+    }
 </script>

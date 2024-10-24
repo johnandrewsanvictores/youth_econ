@@ -11,7 +11,7 @@ class WorkerModel
     }
 
     // business field
-    public function getJob($filter = null, $sortField = 'id', $sortOrder = 'ASC')
+    public function getJob($filter = null, $sortField = 'j.title', $sortOrder = 'ASC')
     {
         try {
             // Base query
@@ -135,18 +135,25 @@ class WorkerModel
 
 
 
-    public function addWorkerData($profile_pic, $name, $age, $job_ids, $contact_number, $brief_intro, $education_level, $email, $fb)
-    {
+    public function addWorkerData(
+        $profile_pic,
+        $name,
+        $age,
+        $job_ids,
+        $contact_number,
+        $brief_intro,
+        $education_level,
+        $email,
+        $fb
+    ) {
         try {
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            // Check if the name already exists in the worker table
+            // Check if the worker name already exists
             $nameCheckSql = "SELECT COUNT(*) FROM worker WHERE name = :name";
             $nameCheckStmt = $this->pdo->prepare($nameCheckSql);
             $nameCheckStmt->bindValue(':name', $name);
             $nameCheckStmt->execute();
-
-            // Get the count of matching names
             $exists = $nameCheckStmt->fetchColumn();
 
             if ($exists > 0) {
@@ -156,24 +163,31 @@ class WorkerModel
             // Begin a transaction
             $this->pdo->beginTransaction();
 
-            // Prepare the SQL statement for execution
-            $stmt = $this->pdo->prepare("INSERT INTO worker (profile_pic, name, job_id, contact_number, brief_intro, education_level, email, fb_account, age) VALUES (:value1, :value2, :value3, :value4, :value5, :value6, :value7, :value8, :value9)");
+            // Insert worker data into the worker table (without job_id)
+            $workerSql = "INSERT INTO worker (profile_pic, name, contact_number, brief_intro, education_level, email, fb_account, age)
+                          VALUES (:profile_pic, :name, :contact_number, :brief_intro, :education_level, :email, :fb_account, :age)";
+            $workerStmt = $this->pdo->prepare($workerSql);
+            $workerStmt->bindParam(':profile_pic', $profile_pic);
+            $workerStmt->bindParam(':name', $name);
+            $workerStmt->bindParam(':contact_number', $contact_number);
+            $workerStmt->bindParam(':brief_intro', $brief_intro);
+            $workerStmt->bindParam(':education_level', $education_level);
+            $workerStmt->bindParam(':email', $email);
+            $workerStmt->bindParam(':fb_account', $fb);
+            $workerStmt->bindParam(':age', $age);
+            $workerStmt->execute();
 
-            // Bind parameters once outside the loop
-            $stmt->bindParam(':value1', $profile_pic);
-            $stmt->bindParam(':value2', $name);
-            $stmt->bindParam(':value4', $contact_number);
-            $stmt->bindParam(':value5', $brief_intro);
-            $stmt->bindParam(':value6', $education_level);
-            $stmt->bindParam(':value7', $email);
-            $stmt->bindParam(':value8', $fb);
-            $stmt->bindParam(':value9', $age);
+            // Get the last inserted worker ID
+            $worker_id = $this->pdo->lastInsertId();
+
+            // Insert the job_ids into the worker_job table
+            $workerJobSql = "INSERT INTO worker_job (worker_id, job_id) VALUES (:worker_id, :job_id)";
+            $workerJobStmt = $this->pdo->prepare($workerJobSql);
+            $workerJobStmt->bindParam(':worker_id', $worker_id);
 
             foreach ($job_ids as $job_id) {
-                $stmt->bindParam(':value3', $job_id); // Bind job_id within the loop
-
-                // Execute the prepared statement
-                $stmt->execute();
+                $workerJobStmt->bindParam(':job_id', $job_id);
+                $workerJobStmt->execute();
             }
 
             // Commit the transaction
@@ -181,9 +195,124 @@ class WorkerModel
 
             return json_encode(['success' => true, 'message' => "Worker data added successfully."]);
         } catch (PDOException $e) {
-            // Rollback the transaction if something went wrong
+            // Rollback the transaction if something goes wrong
             $this->pdo->rollBack();
             return json_encode(['success' => false, 'message' => "Error adding worker: " . $e->getMessage()]);
+        }
+    }
+
+
+
+
+    public function getWorkersDataTable($selected_job)
+    {
+        try {
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Base SQL query
+            $sql = "SELECT 
+                    worker.id,
+                    worker.name,
+                    worker.age,
+                    GROUP_CONCAT(job.title SEPARATOR ', ') AS job_titles,
+                    worker.contact_number,
+                    worker.email,
+                    worker.education_level
+                FROM 
+                    worker
+                LEFT JOIN 
+                    worker_job ON worker.id = worker_job.worker_id
+                LEFT JOIN 
+                    job ON worker_job.job_id = job.id";
+
+            $whereClauses = [];
+            $params = [];
+
+            // Search filter
+            if (isset($_POST['search']['value']) && $_POST['search']['value'] != '') {
+                $search_value = $_POST['search']['value'];
+                $whereClauses[] = "(worker.name LIKE :search OR job.title LIKE :search)";
+                $params[':search'] = "%$search_value%";
+            }
+
+            // Filter by search or job
+            if (!empty($whereClauses)) {
+                $sql .= " WHERE " . implode(" AND ", $whereClauses);
+            }
+
+            // Group by worker.id to aggregate job titles
+            $sql .= " GROUP BY worker.id";
+
+            // Filter by selected job using HAVING to ensure all jobs for the worker are still displayed
+            if (isset($selected_job)) {
+                $sql .= " HAVING SUM(CASE WHEN worker_job.job_id = :selected_job THEN 1 ELSE 0 END) > 0";
+                $params[':selected_job'] = $selected_job;
+            }
+
+            // Count total records
+            $countSql = "SELECT COUNT(*) FROM (" . $sql . ") AS total";
+            $countStmt = $this->pdo->prepare($countSql);
+            foreach ($params as $param => $value) {
+                $countStmt->bindValue($param, $value);
+            }
+            $countStmt->execute();
+            $totalRecords = $countStmt->fetchColumn();
+
+            // Sorting
+            if (isset($_POST['order'])) {
+                $columns = [
+                    0 => 'worker.id',
+                    1 => 'worker.name',
+                    2 => 'worker.age',
+                    3 => 'job_titles',
+                    4 => 'worker.contact_number',
+                    5 => 'worker.email',
+                    6 => 'worker.education_level',
+                ];
+                $column_name = $_POST['order'][0]['column'];
+                $order = $_POST['order'][0]['dir'];
+                $sql .= " ORDER BY " . $columns[$column_name] . " " . $order;
+            } else {
+                $sql .= " ORDER BY worker.name ASC";
+            }
+
+            // Pagination
+            if ($_POST['length'] != -1) {
+                $limit = $_POST['length'];
+                $offset = $_POST['start'];
+                $sql .= " LIMIT :limit OFFSET :offset";
+            }
+
+            // Prepare the statement
+            $stmt = $this->pdo->prepare($sql);
+
+            // Bind all parameters
+            foreach ($params as $param => $value) {
+                $stmt->bindValue($param, $value);
+            }
+
+            // Bind pagination parameters
+            $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+
+            // Execute the query
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Return the data
+            $output = [
+                'draw' => intval($_POST['draw']),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $totalRecords,
+                'data' => $results,
+                'sql' => $sql // Optional for debugging purposes
+            ];
+
+            return json_encode($output);
+        } catch (PDOException $e) {
+            $this->response['success'] = false;
+            $this->response['message'] = "Error retrieving workers: " . $e->getMessage();
+            return json_encode($this->response);
         }
     }
 }

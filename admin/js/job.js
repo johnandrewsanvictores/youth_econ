@@ -70,22 +70,24 @@ const DOM_Manipulate = (function() {
                                     `;
     }
 
-    // function add_new_option_select(data) {
-    //     job_select.innerHTML += `<option value='${data.id}'>${data.title}</option>`
-    //     job_select_form.innerHTML += `<option value='${data.id}'>${data.title}</option>`
-    // }
+    function add_new_option_select(data) {
+        job_select.innerHTML += `<option value='${data.id}'>${data.job_title}</option>`
+        update_select_job();
+        // job_select_form.innerHTML += `<option value='${data.id}'>${data.title}</option>`
+    }
 
-    // function remove_option_select(id) {
-    //     const current_option = job_select.querySelector(`option[value="${id}"]`)
-    //     const form_current_option = job_select_form.querySelector(`option[value="${id}"]`)
-    //     current_option.remove();
-    //     form_current_option.remove();
-    // }
+    function remove_option_select(id) {
+        const current_option = job_select.querySelector(`option[value="${id}"]`)
+        current_option.remove();
+        update_select_job();
+        // const form_current_option = job_select_form.querySelector(`option[value="${id}"]`)
+        // form_current_option.remove();
+    }
 
     return {
         add_new_job_row,
-        // add_new_option_select,
-        // remove_option_select
+        add_new_option_select,
+        remove_option_select
     }
 })();
 
@@ -106,7 +108,7 @@ const Job_Request = (function() {
                     if (response.success) {
                         Popup1.show_message(response.message, 'success');
                         current_row_el.remove();
-                        // DOM_Manipulate.remove_option_select(id);
+                        DOM_Manipulate.remove_option_select(id);
                     }else {
                         Popup1.show_message(response.message, 'error');
                     }
@@ -135,7 +137,7 @@ const Job_Request = (function() {
 
                         let data = response.last_added_data;
                         DOM_Manipulate.add_new_job_row(data);
-                        // DOM_Manipulate.add_new_option_select(data);
+                        DOM_Manipulate.add_new_option_select(data);
 
                         Button_Function.rmv_btn_add_event();
                         form.reset();

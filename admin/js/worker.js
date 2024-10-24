@@ -1,4 +1,4 @@
-// const select_field_node = document.querySelector('.field-select select');
+const select_job_node = document.querySelector('.job-select select');
 const worker_form = document.getElementById('worker-form');
 const form_title = document.querySelector('.worker-form-header h5');
 var table = null;
@@ -6,8 +6,8 @@ var table = null;
 var old_img = null; //this is the src of the old img if override in edit.
 
 document.addEventListener("DOMContentLoaded", function() {
-    // table = Table.initDataTable();
-    // Table.addSelectEvent(table);
+    table = Table.initDataTable();
+    Table.addSelectEvent(table);
 
     Controls.add_events();
     Form.add_events();
@@ -21,17 +21,19 @@ const Table = (function() {
             processing: true,
             serverSide: true,
             ajax: {
-                url: "../../api/business_api.php",
+                url: "../../api/worker_api.php",
                 type: "post",
-                data: {'action' : "datatableDisplay", "selected_field" : select_field_node.value},
+                data: {'action' : "datatableDisplay", "selected_job" : select_job_node.value},
             },
-            // ajax: "../../api/business_datatable_api.php",
+
             "columns": [
                 { "data": "id", visible: false },
                 { "data": "name" },
-                { "data": "field" },
-                { "data": "location" },
+                { "data": "age" },
+                { "data": "job_titles" },
                 { "data": "contact_number" },
+                { "data": "email" },
+                { "data": "education_level" },
             ]
         });
     }
@@ -80,7 +82,7 @@ const Controls = (function() {
         worker_new_btn.addEventListener('click', Form.add_data_event);
         worker_edit_btn.addEventListener('click', Form.edit_data_event);
         worker_rmv_btn.addEventListener('click', remove_data_event);
-        // select_field_node.addEventListener('change', select_field_change_event);
+        select_job_node.addEventListener('change', select_job_change_event);
     }
 
     function get_selected_ids() {
@@ -105,8 +107,8 @@ const Controls = (function() {
         Popup1.show_confirm_dialog("Are you sure you want to delete it?", () => Request_Worker.removeData(ids));
     }
 
-    function select_field_change_event() {
-        table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_field" : select_field_node.value}
+    function select_job_change_event() {
+        table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_job" : select_job_node.value}
         table.draw();
     }
 
@@ -114,7 +116,7 @@ const Controls = (function() {
         add_events
     }
 
-})();
+})(); 
 
 
 const Form = (function() {
@@ -155,7 +157,7 @@ const Form = (function() {
         var soc_meds = response.social_media;
         const img_preview = document.querySelector('.logo-container img');
         const name = document.querySelector('input[name="business_name"]');
-        const select_field = document.querySelector('.field-select-form select[name="field"]');
+        const select_job = document.querySelector('.job-select-form select[name="job"]');
         const contact_number = document.querySelector('input[name="bus_contact_num"');
         const description = document.querySelector('.desc-container textarea');
         const location = document.querySelector('.location-output-container input');
@@ -169,7 +171,7 @@ const Form = (function() {
         old_img = data.logo;
         img_preview.src = "../" + data.logo;
         name.value = data.name;
-        select_field.value = data.field_id;
+        select_job.value = data.job_id;
         contact_number.value = data.contact_number;
         description.value = data.description;
         location.value = data.location;
@@ -227,12 +229,12 @@ const Request_Worker = (function() {
                 if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
-                        // table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_field" : select_field_node.value}
-                        // table.draw();
+                        table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_job" : select_job_node.value}
+                        table.draw();
                         Popup1.show_message(response.message, 'success');
                         reset_bs_form();
                         // PopUp.closeModal();
-                        // Table.deselect_all_selected_row();
+                        Table.deselect_all_selected_row();
                     } else {
                         Popup1.show_message(response.message, 'error');
                     }
@@ -258,7 +260,7 @@ const Request_Worker = (function() {
                 if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
-                        table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_field" : select_field_node.value}
+                        table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_job" : select_job_node.value}
                         table.draw();
                         Popup1.show_message(response.message, 'success');
                         reset_bs_form();

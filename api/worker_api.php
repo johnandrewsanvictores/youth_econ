@@ -8,9 +8,27 @@ $workerModel = new WorkerModel($connection);
 // $businessFields = $workerModel->getBusinessFields();
 
 
+if (isset($_POST['action']) && $_POST['action'] == "datatableDisplay") {
+    $search_v = $_POST['search']['value'];
+    $selected_job = $_POST['selected_job'] == 'all' ? null : $_POST['selected_job'];
+    $output = $workerModel->getWorkersDataTable($selected_job);
+
+    echo $output;
+    exit();
+}
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    //get jobs
+
+    if (isset($_POST['action']) && $_POST['action'] == 'getJobs') {
+        $workerModel = new WorkerModel($connection);
+        $jobs = $workerModel->getJob();
+        $response = array(["success" => true, "data" => $jobs]);
+        echo json_encode($response);
+        return json_encode($response);
+    }
+
     //adding job field
     if (isset($_POST['action']) && $_POST['action'] == 'addJob') {
 

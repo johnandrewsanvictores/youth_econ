@@ -67,18 +67,18 @@ $businessFields = $businessModel->getBusinessFields();
                     </div>
 
                     <div class="custom-filter-control">
-                        <label for="field">Field</label>
-                        <div class="field-select">
-                            <select name="field">
+                        <label for="job">Job:</label>
+                        <div class="job-select">
+                            <select name="job">
                                 <option value="all" selected>All</option>
                                 <?php
-                                $businessModel = new BusinessModel($connection);
-                                $businessFields = $businessModel->getBusinessFields();
+                                $workerModel = new WorkerModel($connection);
+                                $jobs = $workerModel->getJob();
 
-                                if ($businessFields) {
-                                    foreach ($businessFields as $field) {
-                                        $id = htmlspecialchars($field['id']);
-                                        $title = htmlspecialchars($field['title']);
+                                if ($jobs) {
+                                    foreach ($jobs as $job) {
+                                        $id = htmlspecialchars($job['id']);
+                                        $title = htmlspecialchars($job['job_title']);
 
                                         echo "<option value='$id'>$title</option>";
                                     }
@@ -92,15 +92,16 @@ $businessFields = $businessModel->getBusinessFields();
 
             </div>
             <div class="table-div">
-                <table id="example" class="display stripe" style="width:100%">
+                <table id="example" class="display stripe" style="width:100%;">
                     <thead>
                         <tr>
                             <th>Id</th>
                             <th>Name</th>
+                            <th>Age</th>
                             <th>Job</th>
                             <th>Contact Number</th>
                             <th>Email</th>
-                            <th>FB Account</th>
+                            <th>Education Level</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -111,10 +112,11 @@ $businessFields = $businessModel->getBusinessFields();
                         <tr>
                             <th>Id</th>
                             <th>Name</th>
+                            <th>Age</th>
                             <th>Job</th>
                             <th>Contact Number</th>
                             <th>Email</th>
-                            <th>FB Account</th>
+                            <th>Education Level</th>
                         </tr>
                     </tfoot>
                 </table>
