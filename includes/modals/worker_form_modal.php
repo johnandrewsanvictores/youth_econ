@@ -5,42 +5,37 @@
             <button id="close-worker-form"><i class='fas fa-times'></i></button>
         </div>
         <div class="worker-form-container">
-            <form action="" id="worker-form">
+            <form action="" id="worker-form" method="POST" enctype="multipart/form-data">
                 <div class="left-form">
                     <div class="logo-container">
                         <label>Profile Picture <span class="red-text">*</span></label>
-                        <img src="../images/placeholder.svg" alt="preview logo img">
+                        <img id="profile-pic-preview" src="../images/placeholder.svg" alt="preview logo img">
                         <div class="input-file-div">
-                            <label for="input-file-btn" class="custom-file-upload">
-                                Browse
-                            </label>
-                            <input type="file" name="profile-pic" id="input-file-btn" value="" required>
+                            <label for="input-file-btn" class="custom-file-upload">Browse</label>
+                            <input type="file" name="profile-pic" id="input-file-btn" required>
                         </div>
                     </div>
 
                     <div>
-                        <input type="hidden" name="worker_id" value="" />
+                        <input type="hidden" name="worker_id" id="worker-id" />
                         <label>Name <span class="red-text">*</span></label>
-                        <input type="text" name="worker_name" required>
+                        <input type="text" name="worker_name" id="worker-name" required>
                     </div>
 
                     <div>
                         <label>Age <span class="red-text">*</span></label>
-                        <input type="number" name="age" required>
+                        <input type="number" name="age" id="worker-age" required>
                     </div>
 
                     <div>
                         <label>Job/s <span class="red-text">*</span></label>
-                        <?php include('../../includes/job_select_tag.php') ?>
+                        <?php include('../../includes/job_select_tag.php'); ?>
                     </div>
-
 
                     <div>
                         <label>Contact Number <span class="red-text">*</span></label>
-                        <input type="tel" name="worker_contact_num" pattern="09\d{2} \d{3} \d{4}" placeholder="09XX XXX XXXX" maxlength="13" required>
+                        <input type="tel" name="worker_contact_num" id="worker-contact-num" pattern="09\d{2} \d{3} \d{4}" placeholder="09XX XXX XXXX" maxlength="13" required>
                     </div>
-
-
                 </div>
 
                 <div class="right-form">
@@ -48,15 +43,15 @@
                         <label>Current Education Level <span class="red-text">*</span></label>
                         <div class="educ-subcontainer">
                             <label>
-                                <input type="radio" name="educ_level" value="graduate" />
+                                <input type="radio" name="educ_level" value="graduate" id="educ-graduate">
                                 <span>Graduate</span>
                             </label>
                             <label>
-                                <input type="radio" name="educ_level" value="undergraduate" />
+                                <input type="radio" name="educ_level" value="undergraduate" id="educ-undergraduate">
                                 <span>Undergraduate</span>
                             </label>
                             <label>
-                                <input type="radio" name="educ_level" value="highschool" />
+                                <input type="radio" name="educ_level" value="highschool" id="educ-highschool">
                                 <span>Highschool</span>
                             </label>
                         </div>
@@ -64,21 +59,20 @@
 
                     <div class="desc-container">
                         <label>Introduction <span class="red-text">*</span></label>
-                        <textarea name="intro" id="" required></textarea>
+                        <textarea name="intro" id="worker-intro" required></textarea>
                     </div>
 
                     <div class="social-links-container">
                         <label>Social Media Links</label>
                         <div>
                             <div><i class="fab fa-facebook-f"></i> <span class="white-text">*</span></div>
-                            <input type="url" name="facebook" id="" placeholder="Enter worker fb profile link">
+                            <input type="url" name="facebook" id="worker-facebook" placeholder="Enter worker fb profile link">
                         </div>
                         <div>
                             <div><i class="fas fa-envelope"></i></div>
-                            <input type="email" name="email" id="" placeholder="Enter worker email address">
+                            <input type="email" name="email" id="worker-email" placeholder="Enter worker email address">
                         </div>
                     </div>
-
                 </div>
 
                 <button type="submit" id="submit-worker-form">Submit</button>
@@ -400,12 +394,12 @@ label:focus-within {
     const bs_container = document.querySelector('.worker-form-main-container');
     const bs_close_btn = document.querySelector('#close-worker-form');
 
-    const logo_btn = document.querySelector('#input-file-btn');
+    const profile_pic_btn = document.querySelector('#input-file-btn');
 
-    bs_close_btn.addEventListener('click', closeBSModal);
-    logo_btn.addEventListener('change', (event) => setLogo(event));
+    bs_close_btn.addEventListener('click', closeWorkerModal);
+    profile_pic_btn.addEventListener('change', (event) => setProfile(event));
 
-    function closeBSModal() {
+    function closeWorkerModal() {
         // fieldModalWrapper.querySelector('form').reset();
 
         bs_container.style.opacity = '0';
@@ -416,10 +410,10 @@ label:focus-within {
         bs_wrapper.style.visibility = 'hidden';
         bs_wrapper.style.transform = 'scale(0)';
 
-        reset_bs_form();
+        reset_worker_form();
     }
 
-    function showBSModal() {
+    function showWorkerModal() {
         // fieldModalWrapper.querySelector('form').reset();
 
         bs_container.style.opacity = '1';
@@ -431,7 +425,7 @@ label:focus-within {
         bs_wrapper.style.transform = 'scale(1)';
     }
 
-    function setLogo(e) {
+    function setProfile(e) {
         const img_preview = document.querySelector('.logo-container img');
         const file = e.target.files[0];
 
@@ -444,9 +438,10 @@ label:focus-within {
         }
     }
 
-    function reset_bs_form() {
+    function reset_worker_form() {
         document.querySelector('#worker-form').reset();
+        document.querySelector('#worker-id').value = null;
         document.querySelector('.logo-container img').src = "../images/placeholder.svg";
-        resetMap() //business_form_modal function
+        document.querySelector('.job-select-wrap button').textContent = "Select";
     }
 </script>

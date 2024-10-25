@@ -127,7 +127,7 @@ const Form = (function() {
 
     function add_data_event() {
         form_title.textContent = "ADD WORKER INFORMATION";
-        showBSModal();
+        showWorkerModal();
     }
 
     async function edit_data_event(e) {
@@ -148,54 +148,44 @@ const Form = (function() {
         const data = await Request_Worker.get_specific_business_data(selected_rows[0].id);
         Form.fill_info(data);
 
-        showBSModal();
+        showWorkerModal();
     }
 
     function fill_info(response) {
         
         var data = response[0];
-        console.log(data);
-        // var soc_meds = response.social_media;
-        // const img_preview = document.querySelector('.logo-container img');
-        // const name = document.querySelector('input[name="business_name"]');
-        // const select_job = document.querySelector('.job-select-form select[name="job"]');
-        // const contact_number = document.querySelector('input[name="bus_contact_num"');
-        // const description = document.querySelector('.desc-container textarea');
-        // const location = document.querySelector('.location-output-container input');
 
-        // const fb_input = document.querySelector('input[name="facebook"]');
-        // const ig_input = document.querySelector('input[name="instagram"]');
-        // const tt_input = document.querySelector('input[name="tiktok"]');
+        document.getElementById('worker-id').value = data.worker_id;
+        document.getElementById('worker-name').value = data.name;
+        document.getElementById('worker-age').value = data.age;
+        document.getElementById('worker-contact-num').value = data.contact_number;
+        document.getElementById('worker-intro').value = data.brief_intro;
+        document.getElementById('worker-facebook').value = data.fb_account;
+        document.getElementById('worker-email').value = data.email;
+        document.getElementById('profile-pic-preview').src = "../../" + data.profile_pic;
 
-        // const id_input = document.querySelector('input[name="business_id"]');
+        old_img = data.profile_pic;
 
-        // old_img = data.logo;
-        // img_preview.src = "../" + data.logo;
-        // name.value = data.name;
-        // select_job.value = data.job_id;
-        // contact_number.value = data.contact_number;
-        // description.value = data.description;
-        // location.value = data.location;
+        // Set the education level radio button
+        const educationRadios = document.getElementsByName('educ_level');
+        educationRadios.forEach(radio => {
+            if (radio.value === data.education_level) {
+                radio.checked = true;
+            }
+        });
 
-        // id_input.value = data.id;
+        // Optionally: Set job titles as selected checkboxes
+        const jobTitles = data.job_titles.split(', ');
+        const checkboxes = document.querySelectorAll(`input[type="checkbox"]`);
 
-        // var latlang= data.location.split(',');
 
-        // addMarker(latlang[0], latlang[1], "Coordinates: " + latlang[0] + ", " + latlang[1]);
+        checkboxes.forEach(checkbox => {
+            if(data.job_ids.includes(checkbox.value)) {
+                checkbox.checked = true;
+            }
+        });
 
-        // soc_meds.forEach(soc_med => {
-        //     switch(soc_med.social_media_id) {
-        //         case '1':
-        //             fb_input.value = soc_med.link;
-        //             break;
-        //         case '2':
-        //             ig_input.value = soc_med.link;
-        //             break;
-        //         case '3':
-        //             tt_input.value = soc_med.link;
-        //             break;
-        //     }
-        // });
+        updateButtonText(document.querySelector('.job-select-wrap'));
 
     }
 
@@ -214,7 +204,7 @@ const Request_Worker = (function() {
         
         if(form_title.textContent === "ADD WORKER INFORMATION") {
             addData();
-        }else if(form_title.textContent === "Update Business") {
+        }else if(form_title.textContent === "UPDATE WORKER INFORMATION") {
             updateData();
         }
     }
@@ -249,12 +239,12 @@ const Request_Worker = (function() {
 
     function updateData() {
         const formData = new FormData(worker_form);
-        formData.append('action', 'updateBusiness');
+        formData.append('action', 'updateWorker');
         formData.append('img_src', document.querySelector('.logo-container img').src);
         formData.append('old_img_src', old_img);
 
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/youth_econ/api/business_api.php', true);
+        xhr.open('POST', '/youth_econ/api/worker_api.php', true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -264,8 +254,8 @@ const Request_Worker = (function() {
                         table.context[0].ajax.data = {'action' : "datatableDisplay", "selected_job" : select_job_node.value}
                         table.draw();
                         Popup1.show_message(response.message, 'success');
-                        reset_bs_form();
-                        closeBSModal();
+                        reset_worker_form();
+                        closeWorkerModal();
                     } else {
                         Popup1.show_message(response.message, 'error');
                     }

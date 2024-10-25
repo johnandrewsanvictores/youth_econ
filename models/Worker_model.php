@@ -203,6 +203,114 @@ class WorkerModel
 
 
 
+    public function getWorkers($filters = [], $orderBy = 'worker.name', $orderDir = 'ASC', $limit = -1, $offset = 0)
+    {
+        try {
+            // Set PDO error mode to exception
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Base SQL query with necessary joins
+            $sql = "SELECT 
+                worker.id AS worker_id,
+                worker.profile_pic,
+                worker.age,
+                worker.fb_account,
+                worker.brief_intro,
+                worker.name,
+                GROUP_CONCAT(DISTINCT job.id SEPARATOR ',') AS job_ids, 
+                GROUP_CONCAT(DISTINCT job.title SEPARATOR ', ') AS job_titles,
+                business_field.id AS field_id,
+                business_field.title AS field_title,
+                worker.contact_number,
+                worker.email,
+                worker.education_level
+            FROM 
+                worker
+            LEFT JOIN 
+                worker_job ON worker.id = worker_job.worker_id
+            LEFT JOIN 
+                job ON worker_job.job_id = job.id
+            LEFT JOIN 
+                business_field ON job.field_id = business_field.id"; // Join to get the field title
+
+            // Initialize an array to hold WHERE clauses and parameters
+            $whereClauses = [];
+            $params = [];
+
+            // Add filtering based on passed filters (dynamic WHERE clause)
+            foreach ($filters as $column => $value) {
+                // Check if the value is intended for a LIKE comparison
+                if (is_string($value) && in_array($column, ['name', 'field_title'])) {
+                    $whereClauses[] = "$column LIKE :$column";
+                    $params[":$column"] = '%' . $value . '%'; // Wrap value with wildcards for LIKE
+                } elseif ($column === 'job_id') {
+                    // Special handling for job_id
+                    $params[":job_id"] = $value;
+                } else {
+                    // Add to WHERE clause for exact matches
+                    $whereClauses[] = "$column = :$column";
+                    $params[":$column"] = $value; // Correctly bind the value
+                }
+            }
+
+            // Add WHERE clause if there are any filters
+            if (!empty($whereClauses)) {
+                $sql .= " WHERE " . implode(" AND ", $whereClauses);
+            }
+
+            // Group by worker.id to avoid duplicate rows for workers with multiple jobs
+            $sql .= " GROUP BY worker.id";
+
+            // Add HAVING clause to filter workers by job_id, ensuring all jobs are returned
+            if (isset($params[":job_id"])) {
+                $sql .= " HAVING FIND_IN_SET(:job_id, job_ids) > 0"; // Check if the job_id is in the concatenated job_ids
+            }
+
+            // Add ORDER BY clause
+            $sql .= " ORDER BY $orderBy $orderDir";
+
+            // Add LIMIT and OFFSET for pagination
+            if ($limit !== null && $limit != -1) {
+                $sql .= " LIMIT :limit OFFSET :offset";
+            }
+
+            // Prepare the SQL statement
+            $stmt = $this->pdo->prepare($sql);
+
+            // Bind parameters for filters
+            foreach ($params as $param => $value) {
+                $stmt->bindValue($param, $value);
+            }
+
+            // Bind limit and offset if they are set
+            if ($limit !== null && $limit != -1) {
+                $stmt->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
+                $stmt->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
+            }
+
+            // Execute the statement
+            $stmt->execute();
+
+            // Fetch all the results
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Return the result set
+            $this->response['success'] = true;
+            $this->response['message'] = "Retrieved";
+            $this->response['data'] = $results;
+
+            return json_encode($this->response);
+        } catch (PDOException $e) {
+            // Handle any errors
+            $this->response['success'] = false;
+            $this->response['message'] = "Error retrieving workers: " . $e->getMessage();
+            return json_encode($this->response);
+        }
+    }
+
+
+
+
 
     public function getWorkersDataTable($selected_job)
     {
@@ -378,5 +486,86 @@ class WorkerModel
         }
 
         return json_encode($this->response);
+    }
+
+
+    public function updateWorkerData(
+        $worker_id,
+        $profile_pic,
+        $name,
+        $age,
+        $job_ids,
+        $contact_number,
+        $brief_intro,
+        $education_level,
+        $email,
+        $fb
+    ) {
+        try {
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Check if the worker exists
+            $workerCheckSql = "SELECT COUNT(*) FROM worker WHERE id = :worker_id";
+            $workerCheckStmt = $this->pdo->prepare($workerCheckSql);
+            $workerCheckStmt->bindValue(':worker_id', $worker_id);
+            $workerCheckStmt->execute();
+            $exists = $workerCheckStmt->fetchColumn();
+
+            if ($exists == 0) {
+                return json_encode(['success' => false, 'message' => "The worker does not exist!"]);
+            }
+
+            // Begin a transaction
+            $this->pdo->beginTransaction();
+
+            // Update worker data in the worker table
+            $workerSql = "UPDATE worker 
+                          SET profile_pic = :profile_pic,
+                              name = :name,
+                              contact_number = :contact_number,
+                              brief_intro = :brief_intro,
+                              education_level = :education_level,
+                              email = :email,
+                              fb_account = :fb_account,
+                              age = :age
+                          WHERE id = :worker_id";
+            $workerStmt = $this->pdo->prepare($workerSql);
+            $workerStmt->bindParam(':profile_pic', $profile_pic);
+            $workerStmt->bindParam(':name', $name);
+            $workerStmt->bindParam(':contact_number', $contact_number);
+            $workerStmt->bindParam(':brief_intro', $brief_intro);
+            $workerStmt->bindParam(':education_level', $education_level);
+            $workerStmt->bindParam(':email', $email);
+            $workerStmt->bindParam(':fb_account', $fb);
+            $workerStmt->bindParam(':age', $age);
+            $workerStmt->bindParam(':worker_id', $worker_id);
+            $workerStmt->execute();
+
+            // Update job associations in the worker_job table
+            // First, remove all current job associations
+            $deleteJobsSql = "DELETE FROM worker_job WHERE worker_id = :worker_id";
+            $deleteJobsStmt = $this->pdo->prepare($deleteJobsSql);
+            $deleteJobsStmt->bindParam(':worker_id', $worker_id);
+            $deleteJobsStmt->execute();
+
+            // Insert the new job_ids into the worker_job table
+            $workerJobSql = "INSERT INTO worker_job (worker_id, job_id) VALUES (:worker_id, :job_id)";
+            $workerJobStmt = $this->pdo->prepare($workerJobSql);
+            $workerJobStmt->bindParam(':worker_id', $worker_id);
+
+            foreach ($job_ids as $job_id) {
+                $workerJobStmt->bindParam(':job_id', $job_id);
+                $workerJobStmt->execute();
+            }
+
+            // Commit the transaction
+            $this->pdo->commit();
+
+            return json_encode(['success' => true, 'message' => "Worker data updated successfully."]);
+        } catch (PDOException $e) {
+            // Rollback the transaction if something goes wrong
+            $this->pdo->rollBack();
+            return json_encode(['success' => false, 'message' => "Error updating worker: " . $e->getMessage()]);
+        }
     }
 }
